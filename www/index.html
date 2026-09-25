@@ -14,11 +14,74 @@
     <style>
         *{box-sizing:border-box;margin:0;padding:0}
         body{background:#f4f7fb;font-family:'Segoe UI','Tajawal','Cairo',system-ui,sans-serif;color:#1e2f3a;padding-bottom:20px;font-weight:500}
+
+        /* ===== شاشة البداية (Splash) ===== */
+        #splashScreen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #0a4b2e 0%, #16a085 100%);
+            z-index: 999999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s ease;
+            opacity: 1;
+        }
+        #splashScreen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #splashScreen .splash-logo {
+            font-size: 4rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 12px;
+            letter-spacing: 3px;
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            animation: splashPulse 1.8s ease-in-out infinite;
+        }
+        #splashScreen .splash-subtitle {
+            font-size: 1.05rem;
+            color: rgba(255,255,255,0.95);
+            font-weight: 600;
+            margin-bottom: 40px;
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            letter-spacing: 1px;
+        }
+        #splashScreen .splash-designer {
+            position: absolute;
+            bottom: 60px;
+            text-align: center;
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+        }
+        #splashScreen .splash-designer .line1 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            margin-bottom: 6px;
+            color: #ffd700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        #splashScreen .splash-designer .line2 {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.9);
+        }
+        @keyframes splashPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.92; }
+        }
+
+        /* ===== شاشة القفل ===== */
         #lockScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#0a4b2e;z-index:99999;display:flex;justify-content:center;align-items:center;font-family:'Segoe UI','Tajawal',sans-serif}
         .lock-card{background:white;padding:30px;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.3);text-align:center;width:90%;max-width:380px}
         .lock-card h2{margin-bottom:15px;color:#0a4b2e;font-weight:900}
-        .lock-card input{width:100%;padding:12px;font-size:1.2rem;text-align:center;border:2px solid #ccc;border-radius:8px;margin-bottom:15px;letter-spacing:2px;font-weight:bold}
+        .lock-card input{width:100%;padding:12px;font-size:1.2rem;text-align:center;border:2px solid #ccc;border-radius:8px;margin-bottom:15px;letter-spacing:4px;font-weight:bold}
         .lock-card button{width:100%;padding:12px;background:#27ae60;color:white;border:none;border-radius:8px;font-size:1rem;font-weight:bold;cursor:pointer}
+
         .app-header{background:#0a4b2e;color:white;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.1);font-weight:bold}
         .app-header h2{font-size:1.3rem;margin:0;font-weight:800}
         .create-invoice-btn{background:#ffc107;color:#1e2a3a;border:none;padding:8px 16px;border-radius:20px;font-weight:bold;font-size:0.9rem;cursor:pointer}
@@ -35,6 +98,7 @@
         table{width:100%;border-collapse:collapse;background:white;border-radius:0;overflow:hidden;font-size:0.85rem;font-weight:500}
         th,td{border:1px solid #ddd;padding:10px 6px;text-align:center}
         th{background:#0a4b2e;color:white;font-weight:bold;font-size:0.9rem}
+
         #invoicePage{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#e0e0e0;z-index:2000;overflow-y:auto;font-family:'Segoe UI','Tajawal','Cairo',sans-serif}
         .invoice-wrapper{max-width:550px;margin:0 auto;background:#ffffff;border:1px solid #000000;box-shadow:0 10px 25px rgba(0,0,0,0.2);overflow:hidden;margin-top:20px;margin-bottom:20px;font-size:1rem;color:#000000;border-radius:0}
         .invoice-header-compact{background:#ffffff;color:#000000;padding:12px 16px 12px;display:flex;flex-direction:column;gap:4px;border-bottom:2px solid #000000}
@@ -207,6 +271,7 @@
             .debt-actions button{padding:6px 10px;font-size:0.7rem}
             .brands-table th,.brands-table td{font-size:0.8rem;padding:5px 6px}
             .invoice-search-input{padding:10px 14px;font-size:0.85rem}
+            #splashScreen .splash-logo {font-size: 3rem;}
         }
         .action-btn:hover{opacity:0.9;transform:scale(1.02)}
         .action-btn:active{transform:scale(0.98)}
@@ -221,59 +286,354 @@
         .store-picker-btn .count-badge{background:#16a085;color:white;padding:4px 12px;border-radius:20px;font-size:0.8rem;font-weight:bold;}
         .store-picker-btn:hover .count-badge{background:white;color:#16a085;}
         .store-picker-cancel{width:100%;padding:12px;background:#e9ecef;border:none;border-radius:10px;font-weight:bold;font-size:1rem;cursor:pointer;color:#555;margin-top:10px;}
+
+        /* ===== قائمة فرعية (المخزون، الإعدادات) ===== */
+        .submenu-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 9800;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+            padding: 20px;
+        }
+        .submenu-card {
+            background: white;
+            padding: 26px 22px;
+            border-radius: 18px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+        .submenu-card h3 {
+            margin-bottom: 6px;
+            color: #0a4b2e;
+            font-weight: 900;
+            font-size: 1.3rem;
+        }
+        .submenu-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+        .submenu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 16px 20px;
+            margin-bottom: 10px;
+            background: #f0f8f5;
+            border: 2px solid #16a085;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.05rem;
+            color: #0a4b2e;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .submenu-btn:hover {
+            background: #16a085;
+            color: white;
+            transform: scale(1.02);
+        }
+        .submenu-btn .count-badge {
+            background: #16a085;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .submenu-btn:hover .count-badge {
+            background: white;
+            color: #16a085;
+        }
+        .submenu-cancel {
+            width: 100%;
+            padding: 12px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            color: #555;
+            margin-top: 6px;
+        }
+
+        /* نافذة "عن التطبيق" */
+        .about-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9900;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(6px);
+            padding: 20px;
+        }
+        .about-card {
+            background: linear-gradient(135deg, #0a4b2e 0%, #16a085 100%);
+            padding: 40px 28px;
+            border-radius: 22px;
+            max-width: 380px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        .about-card .about-logo {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #ffd700;
+            margin-bottom: 8px;
+            letter-spacing: 3px;
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        }
+        .about-card .about-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+        .about-card .about-version {
+            background: rgba(255,255,255,0.15);
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 26px;
+            font-weight: 700;
+        }
+        .about-card .about-info {
+            background: rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255,255,255,0.15);
+        }
+        .about-card .about-info .label {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .about-card .about-info .value {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 14px;
+            letter-spacing: 0.5px;
+        }
+        .about-card .about-info .value:last-child { margin-bottom: 0; }
+        .about-card .about-close {
+            width: 100%;
+            padding: 14px;
+            background: #ffd700;
+            color: #0a4b2e;
+            border: none;
+            border-radius: 10px;
+            font-weight: 900;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .about-card .about-close:hover {
+            transform: scale(1.03);
+            background: #ffed4e;
+        }
+        .about-card .about-glow {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,215,0,0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(30px);
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
-    <div id="loadingOverlay"><div class="spinner"></div><div id="loadingText">جاري التحميل...</div></div>
-    <div id="lockScreen"><div class="lock-card"><h2>مركز الوتين</h2><p style="margin-bottom:15px;font-size:0.9rem;color:#666;">يرجى إدخال كلمة المرور لفتح النظام</p><input type="password" id="passcodeBox" placeholder="كلمة المرور" inputmode="numeric"><button id="unlockBtn">دخول</button></div></div>
-    <div class="app-header"><h2 style="font-size:1.8rem;font-weight:900;letter-spacing:0.5px;">مركز الوتين</h2><button id="createInvoiceBtn" class="create-invoice-btn">إنشاء فاتورة</button></div>
-    <div class="container" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:75vh;">
-        <div class="rate-panel" style="width:100%;max-width:400px;justify-content:center;"><span>سعر الصرف:</span><input type="text" id="usdRate" inputmode="decimal" lang="en" placeholder="0"><button id="saveRateBtn" class="compact-btn primary">حفظ</button></div>
-        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;margin-bottom:15px;width:100%;">
-            <button id="mainHistoryBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;background:#ffc107;color:#1e2a3a;box-shadow:0 4px 10px rgba(255,193,7,0.4);">📋 سجل الفواتير</button>
-            <button id="mainDebtsBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;background:#d9534f;color:white;box-shadow:0 4px 10px rgba(217,83,79,0.3);">💰 الديون</button>
-            <button id="mainCustomersBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;background:#8e44ad;color:white;box-shadow:0 4px 10px rgba(142,68,173,0.3);">👤 معلومات الزبائن</button>
-            <button id="mainBrandsBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;text-align:center;background:#27ae60;color:white;box-shadow:0 4px 10px rgba(39,174,96,0.3);">🏷️ ماركات</button>
-            <button id="mainInventoryBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;text-align:center;background:#16a085;color:white;box-shadow:0 4px 10px rgba(22,160,133,0.3);">📦 الجرد (عيسى / ربيع / سوزان)</button>
-            <button id="mainInventoryValueBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;text-align:center;background:#e67e22;color:white;box-shadow:0 4px 10px rgba(230,126,34,0.3);">💵 قيمة الجرد ($)</button>
-            <button id="mainPrintSettingsBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;text-align:center;background:#6c5ce7;color:white;box-shadow:0 4px 10px rgba(108,92,231,0.3);">⚙️ إعدادات الطباعة</button>
-            <button id="mainFullBackupBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;text-align:center;background:#2980b9;color:white;box-shadow:0 4px 10px rgba(41,128,185,0.3);">💾 النسخ الاحتياطي</button>
-            <button id="mainFullRestoreBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;text-align:center;background:#d35400;color:white;box-shadow:0 4px 10px rgba(211,84,0,0.3);">📂 استعادة الملفات</button>
-            <input type="file" id="mainRestoreFileInput" accept=".json" style="display:none">
-        </div>
-        <div id="brandPanel" style="display:none;margin-top:20px;width:100%;max-width:500px;">
-            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px;"><h3 id="currentBrandTitle" style="font-size:1.3rem;font-weight:800;margin:0;"></h3><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><label style="cursor:pointer;font-size:0.85rem;display:flex;align-items:center;gap:4px;font-weight:bold;background:#eef3e8;padding:4px 8px;border:1px solid #ccc;"><input type="checkbox" id="toggleBrandRoundingCheckbox" style="cursor:pointer;"> تقريب الآحاد</label><button id="backBtn" class="secondary compact-btn">رجوع</button><button id="addProductBtn" class="primary compact-btn">+ صنف</button></div></div>
-            <div style="overflow-x:auto;"><table><thead><th>الصنف</th><th>القياس</th><th>USD</th><th>SYP</th><th></th></thead><tbody id="productsTbody"></tbody></table></div>
+    <!-- شاشة البداية -->
+    <div id="splashScreen">
+        <div class="splash-logo">الوتين</div>
+        <div class="splash-subtitle">مركز الوتين — فواتير</div>
+        <div class="splash-designer">
+            <div class="line1">Designed by [Talal]</div>
+            <div class="line2">📞 0938791890</div>
         </div>
     </div>
+
+    <div id="loadingOverlay"><div class="spinner"></div><div id="loadingText">جاري التحميل...</div></div>
+
+    <!-- شاشة القفل -->
+    <div id="lockScreen">
+        <div class="lock-card">
+            <h2>مركز الوتين</h2>
+            <p style="margin-bottom:15px;font-size:0.9rem;color:#666;">يرجى إدخال كلمة المرور لفتح النظام</p>
+            <input type="password" id="passcodeBox" placeholder="••••••" inputmode="numeric" autocomplete="off">
+            <button id="unlockBtn">دخول</button>
+        </div>
+    </div>
+
+    <!-- الهيدر -->
+    <div class="app-header">
+        <h2 style="font-size:1.8rem;font-weight:900;letter-spacing:0.5px;">مركز الوتين</h2>
+        <button id="createInvoiceBtn" class="create-invoice-btn">إنشاء فاتورة</button>
+    </div>
+
+    <!-- الواجهة الرئيسية -->
+    <div class="container" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:75vh;">
+        <div class="rate-panel" style="width:100%;max-width:400px;justify-content:center;">
+            <span>سعر الصرف:</span>
+            <input type="text" id="usdRate" inputmode="decimal" lang="en" placeholder="0">
+            <button id="saveRateBtn" class="compact-btn primary">حفظ</button>
+        </div>
+
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;margin-bottom:15px;width:100%;">
+            <button id="mainHistoryBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;background:#ffc107;color:#1e2a3a;box-shadow:0 4px 10px rgba(255,193,7,0.4);">📋 سجل الفواتير</button>
+
+            <button id="mainDebtsBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;background:#d9534f;color:white;box-shadow:0 4px 10px rgba(217,83,79,0.3);">💰 الديون</button>
+
+            <button id="mainCustomersBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;background:#8e44ad;color:white;box-shadow:0 4px 10px rgba(142,68,173,0.3);">👤 معلومات الزبائن</button>
+
+            <button id="mainBrandsBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;text-align:center;background:#27ae60;color:white;box-shadow:0 4px 10px rgba(39,174,96,0.3);">🏷️ الأصناف والأسعار</button>
+
+            <button id="mainInventoryBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;text-align:center;background:#16a085;color:white;box-shadow:0 4px 10px rgba(22,160,133,0.3);">📦 المخزون</button>
+
+            <button id="mainSettingsBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;text-align:center;background:#6c5ce7;color:white;box-shadow:0 4px 10px rgba(108,92,231,0.3);">⚙️ الإعدادات</button>
+
+            <button id="mainAboutBtn" class="primary" style="padding:14px;font-size:1.05rem;font-weight:bold;width:100%;max-width:400px;border-radius:25px;text-align:center;background:#34495e;color:white;box-shadow:0 4px 10px rgba(52,73,94,0.3);">ℹ️ عن التطبيق</button>
+
+            <input type="file" id="mainRestoreFileInput" accept=".json" style="display:none">
+        </div>
+
+        <!-- لوحة الماركات (تظهر عند فتح ماركة) -->
+        <div id="brandPanel" style="display:none;margin-top:20px;width:100%;max-width:500px;">
+            <div style="display:flex;justify-content:space-between;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px;">
+                <h3 id="currentBrandTitle" style="font-size:1.3rem;font-weight:800;margin:0;"></h3>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                    <label style="cursor:pointer;font-size:0.85rem;display:flex;align-items:center;gap:4px;font-weight:bold;background:#eef3e8;padding:4px 8px;border:1px solid #ccc;">
+                        <input type="checkbox" id="toggleBrandRoundingCheckbox" style="cursor:pointer;"> تقريب الآحاد
+                    </label>
+                    <button id="backBtn" class="secondary compact-btn">رجوع</button>
+                    <button id="addProductBtn" class="primary compact-btn">+ صنف</button>
+                </div>
+            </div>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead><th>الصنف</th><th>القياس</th><th>USD</th><th>SYP</th><th></th></thead>
+                    <tbody id="productsTbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- صفحة الفاتورة -->
     <div id="invoicePage">
         <div class="invoice-wrapper">
             <div class="currency-selector-panel" id="currencySelectorPanel">
-                <div class="currency-top-row"><div style="display:flex;align-items:center;gap:6px;"><span>العملة:</span><select id="invoiceCurrencySelect"><option value="syp">ليرة سورية (ل.س)</option><option value="usd">دولار أمريكي (USD)</option></select></div><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;"><label id="roundingContainer" style="cursor:pointer;font-size:0.85rem;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="toggleRoundingCheckbox" style="cursor:pointer;"> تقريب الآحاد</label></div></div>
-                <div class="options-toggles-row"><label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="togglePrevRowCheckbox" checked style="cursor:pointer;"> عرض الحساب السابق</label><label style="cursor:pointer;display:flex;align-items:center;gap:4px;"><input type="checkbox" id="toggleTotalRowCheckbox" checked style="cursor:pointer;"> عرض إجمالي الحساب (السابق + الحالي)</label></div>
+                <div class="currency-top-row">
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span>العملة:</span>
+                        <select id="invoiceCurrencySelect">
+                            <option value="syp">ليرة سورية (ل.س)</option>
+                            <option value="usd">دولار أمريكي (USD)</option>
+                        </select>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <label id="roundingContainer" style="cursor:pointer;font-size:0.85rem;display:flex;align-items:center;gap:4px;">
+                            <input type="checkbox" id="toggleRoundingCheckbox" style="cursor:pointer;"> تقريب الآحاد
+                        </label>
+                    </div>
+                </div>
+                <div class="options-toggles-row">
+                    <label style="cursor:pointer;display:flex;align-items:center;gap:4px;">
+                        <input type="checkbox" id="togglePrevRowCheckbox" checked style="cursor:pointer;"> عرض الحساب السابق
+                    </label>
+                    <label style="cursor:pointer;display:flex;align-items:center;gap:4px;">
+                        <input type="checkbox" id="toggleTotalRowCheckbox" checked style="cursor:pointer;"> عرض إجمالي الحساب (السابق + الحالي)
+                    </label>
+                </div>
             </div>
             <div class="invoice-header-compact">
-                <div class="top-info-row"><span class="invoice-num">رقم الفاتورة: <span id="invNumValue">2026</span></span><span class="invoice-date"><span id="invDate"></span></span></div>
-                <div class="customer-line"><span>اسم الزبون:</span><div class="customer-name-wrapper"><span class="editable-customer" id="customerName" contenteditable="true"></span><button class="customer-dropdown-btn no-print" id="customerDropdownBtn">▼</button><div id="customerDropdown" class="customer-dropdown"></div></div></div>
+                <div class="top-info-row">
+                    <span class="invoice-num">رقم الفاتورة: <span id="invNumValue">2026</span></span>
+                    <span class="invoice-date"><span id="invDate"></span></span>
+                </div>
+                <div class="customer-line">
+                    <span>اسم الزبون:</span>
+                    <div class="customer-name-wrapper">
+                        <span class="editable-customer" id="customerName" contenteditable="true"></span>
+                        <button class="customer-dropdown-btn no-print" id="customerDropdownBtn">▼</button>
+                        <div id="customerDropdown" class="customer-dropdown"></div>
+                    </div>
+                </div>
                 <div class="store-selector-row" style="display:flex;justify-content:center;align-items:center;gap:8px;padding:6px 0;font-weight:800;font-size:0.95rem;border-top:1px dashed #ccc;margin-top:4px;">
                     <span>🏪 المحل:</span>
                     <select id="invoiceStoreSelect" style="padding:6px 12px;font-weight:bold;border:2px solid #dc3545;background:#fff;border-radius:6px;font-size:1rem;">
                         <option value="">-- اختر المحل --</option>
-                        <option value="عيسى">🏪 عيسى</option>
-                        <option value="ربيع">🏪 ربيع</option>
-                        <option value="سوزان">🏪 سوزان</option>
                     </select>
                 </div>
-                <div class="shop-details"><span class="editable-shop" id="shopAddressElem" contenteditable="true">العنوان:</span><span class="editable-shop" id="shopPhoneElem" contenteditable="true">الرقم:</span></div>
+                <div class="shop-details">
+                    <span class="editable-shop" id="shopAddressElem" contenteditable="true">العنوان:</span>
+                    <span class="editable-shop" id="shopPhoneElem" contenteditable="true">الرقم:</span>
+                </div>
             </div>
             <div style="padding:8px 12px;">
-                <div class="invoice-search-section"><input type="text" id="invoiceSearchInput" class="invoice-search-input" placeholder="🔍 اختر المحل أولاً ثم ابحث عن صنف..." disabled><div id="invoiceSearchResults" class="search-results-dropdown"></div></div>
-                <table class="invoice-table" id="invoiceTable"><thead><tr><th style="width:35px" id="indexHeader">#</th><th>الصنف</th><th>القياس</th><th>السعر</th><th>العدد</th><th>الاجمالي</th><th id="deleteHeader" style="width:35px"></th></tr></thead><tbody id="invoiceTbody"></tbody></table>
-                <div style="display:flex;justify-content:space-between;padding:6px 12px;font-weight:900;font-size:0.9rem;background:#f2f2f2;border:1px solid #000;border-top:none;"><div>العدد الإجمالي: <span id="invoiceTotalQty">0</span></div><div>الإجمالي: <span id="valCurrent">0</span> <span class="curr-lbl"></span></div></div>
+                <div class="invoice-search-section">
+                    <input type="text" id="invoiceSearchInput" class="invoice-search-input" placeholder="🔍 اختر المحل أولاً ثم ابحث عن صنف..." disabled>
+                    <div id="invoiceSearchResults" class="search-results-dropdown"></div>
+                </div>
+                <table class="invoice-table" id="invoiceTable">
+                    <thead>
+                        <tr>
+                            <th style="width:35px" id="indexHeader">#</th>
+                            <th>الصنف</th>
+                            <th>القياس</th>
+                            <th>السعر</th>
+                            <th>العدد</th>
+                            <th>الاجمالي</th>
+                            <th id="deleteHeader" style="width:35px"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="invoiceTbody"></tbody>
+                </table>
+                <div style="display:flex;justify-content:space-between;padding:6px 12px;font-weight:900;font-size:0.9rem;background:#f2f2f2;border:1px solid #000;border-top:none;">
+                    <div>العدد الإجمالي: <span id="invoiceTotalQty">0</span></div>
+                    <div>الإجمالي: <span id="valCurrent">0</span> <span class="curr-lbl"></span></div>
+                </div>
                 <button onclick="addInvoiceRow()" class="add-item-btn" style="background:#2c7cb6;color:white;border:none;padding:6px 20px;margin:8px 0 4px;font-weight:800;width:100%;font-size:0.85rem;border-radius:8px;">+ إضافة سلعة جديدة</button>
             </div>
             <div style="padding:0 12px;">
-                <table class="invoice-financial-table" id="invoiceSummaryBox"><thead><tr><th id="thPrev">الحساب السابق</th><th>الحساب الحالي</th><th id="thTotal">الإجمالي (السابق+الحالي)</th><th>المبلغ المدفوع</th><th id="thRemaining">المبلغ المتبقي</th></tr></thead><tbody><tr><td id="rowPrev"><input type="text" inputmode="decimal" id="valPrev" class="summary-input" value="0" oninput="calcFinancials()"></td><td><span id="valCurrentAlt">0</span></td><td id="rowTotal"><span id="valTotal">0</span></td><td><input type="text" inputmode="decimal" id="valPaid" class="summary-input" value="0" oninput="calcFinancials()"></td><td id="rowRemaining"><strong><span id="valRemaining">0</span></strong></td></tr></tbody></table>
+                <table class="invoice-financial-table" id="invoiceSummaryBox">
+                    <thead>
+                        <tr>
+                            <th id="thPrev">الحساب السابق</th>
+                            <th>الحساب الحالي</th>
+                            <th id="thTotal">الإجمالي (السابق+الحالي)</th>
+                            <th>المبلغ المدفوع</th>
+                            <th id="thRemaining">المبلغ المتبقي</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td id="rowPrev"><input type="text" inputmode="decimal" id="valPrev" class="summary-input" value="0" oninput="calcFinancials()"></td>
+                            <td><span id="valCurrentAlt">0</span></td>
+                            <td id="rowTotal"><span id="valTotal">0</span></td>
+                            <td><input type="text" inputmode="decimal" id="valPaid" class="summary-input" value="0" oninput="calcFinancials()"></td>
+                            <td id="rowRemaining"><strong><span id="valRemaining">0</span></strong></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="footer-icon">مركز الوتين</div>
         </div>
@@ -287,6 +647,7 @@
         </div>
     </div>
 
+    <!-- إيصال الطباعة -->
     <div id="thermalReceipt">
         <div class="receipt-shop-name" id="rcptShopName">مركز الوتين</div>
         <div class="receipt-owner-line" id="rcptOwnerLine" style="display:none;"></div>
@@ -330,8 +691,9 @@
         <div class="receipt-financials" id="rcptFinancials"></div>
         <div class="receipt-footer" id="rcptFooter">الصفة التي تم البيع بها: من مفرق إلى مفرق</div>
     </div>
+
     <script>
-// ==================== أدوات مساعدة ====================
+      // ==================== أدوات مساعدة ====================
 function showLoading(t){document.getElementById("loadingOverlay").style.display="flex";document.getElementById("loadingText").innerText=t||"جاري التحميل...";}
 function hideLoading(){document.getElementById("loadingOverlay").style.display="none";}
 function escapeHtml(s){return String(s).replace(/[&<>]/g,m=>m==='&'?'&amp;':m==='<'?'&lt;':'&gt;');}
@@ -436,7 +798,6 @@ async function _startHydration() {
         for (const k of keys) {
             _memStore[k] = await localforage.getItem(k);
         }
-        // ترحيل البيانات من localStorage (مرة واحدة)
         let migrated = 0;
         try {
             const legacyKeys = [];
@@ -503,29 +864,18 @@ async function saveOrShareFile(filename, content, mimeType, isBase64) {
     if (isNativeApp() && Fs) {
         try {
             const opts = { path: filename, directory: 'CACHE' };
-            if (isBase64) {
-                opts.data = content;
-            } else {
-                opts.data = content;
-                opts.encoding = 'utf8';
-            }
+            if (isBase64) opts.data = content;
+            else { opts.data = content; opts.encoding = 'utf8'; }
             const res = await Fs.writeFile(opts);
             if (Share) {
                 try {
-                    await Share.share({
-                        title: filename,
-                        url: res.uri,
-                        dialogTitle: 'حفظ / مشاركة الملف'
-                    });
-                } catch(e) {
-                    alert('✅ تم الحفظ في:\n' + res.uri);
-                }
+                    await Share.share({ title: filename, url: res.uri, dialogTitle: 'حفظ / مشاركة الملف' });
+                } catch(e) { alert('✅ تم الحفظ في:\n' + res.uri); }
             } else {
                 alert('✅ تم الحفظ في:\n' + res.uri);
             }
             return { ok: true, uri: res.uri };
         } catch(e) {
-            console.error('Save failed:', e);
             alert('❌ فشل الحفظ: ' + (e.message || e));
             return { ok: false, error: e.message };
         }
@@ -551,6 +901,253 @@ async function saveOrShareFile(filename, content, mimeType, isBase64) {
     }
 }
 
+async function saveFileToAlwateenFolder(filename, content, mimeType, isBase64) {
+    const Fs = window.Capacitor?.Plugins?.Filesystem;
+    if (isNativeApp() && Fs) {
+        const fullPath = 'Alwateen/' + filename;
+        try {
+            const opts = { path: fullPath, directory: 'DOCUMENTS', recursive: true };
+            if (isBase64) opts.data = content;
+            else { opts.data = content; opts.encoding = 'utf8'; }
+            const res = await Fs.writeFile(opts);
+            return { ok: true, uri: res.uri, location: 'المستندات/Alwateen' };
+        } catch(e1) { console.warn('فشل Documents:', e1); }
+        try {
+            const opts = { path: fullPath, directory: 'EXTERNAL_STORAGE', recursive: true };
+            if (isBase64) opts.data = content;
+            else { opts.data = content; opts.encoding = 'utf8'; }
+            const res = await Fs.writeFile(opts);
+            return { ok: true, uri: res.uri, location: 'الذاكرة/Alwateen' };
+        } catch(e2) { console.warn('فشل ExternalStorage:', e2); }
+        return { ok: false, error: 'فشل الحفظ في جميع المسارات' };
+    } else {
+        let blob;
+        if (isBase64) {
+            const byteChars = atob(content);
+            const bytes = new Uint8Array(byteChars.length);
+            for (let i = 0; i < byteChars.length; i++) bytes[i] = byteChars.charCodeAt(i);
+            blob = new Blob([bytes], { type: mimeType });
+        } else {
+            blob = new Blob([content], { type: mimeType });
+        }
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        return { ok: true, location: 'تنزيلات المتصفح' };
+    }
+}
+
+// ==================== البيانات ====================
+let priceData={rate:15000,brands:{}};
+let itemUsageCounts={};
+let currentBrand=null;
+let invoiceItems=[];
+let savedInvoices=[];
+let customersDirectory={};
+let currentEditingInvoiceId=null;
+let currentInvoiceRate=null;
+let inventoryData = {}; // سيُملأ ديناميكياً في loadInventory
+let storesList = []; // [{"id":"store_xxx", "name":"عيسى"}, ...]
+let incomingHistory = [];
+let outboundHistory = [];
+
+// ==================== إدارة المحلات (ديناميكية) ====================
+const DEFAULT_STORES = [
+    { id: 'store_aissa', name: 'عيسى' },
+    { id: 'store_rabee', name: 'ربيع' },
+    { id: 'store_suzan', name: 'سوزان' }
+];
+
+function loadStoresList() {
+    const saved = DB.getItem("storesList");
+    if (saved) {
+        try {
+            const parsed = JSON.parse(saved);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                storesList = parsed;
+                return;
+            }
+        } catch(e) {}
+    }
+    // defaults
+    storesList = JSON.parse(JSON.stringify(DEFAULT_STORES));
+    DB.setItem("storesList", JSON.stringify(storesList));
+}
+
+function saveStoresList() {
+    DB.setItem("storesList", JSON.stringify(storesList));
+}
+
+function getStoreName(id) {
+    const s = storesList.find(x => x.id === id);
+    return s ? s.name : id;
+}
+
+function getStoreById(id) {
+    return storesList.find(x => x.id === id) || null;
+}
+
+function addStore(name) {
+    const cleanName = String(name || "").trim();
+    if (!cleanName) return { ok: false, error: 'الاسم فارغ' };
+    if (storesList.some(s => normalizeArabic(s.name) === normalizeArabic(cleanName))) {
+        return { ok: false, error: 'الاسم موجود مسبقاً' };
+    }
+    const newId = 'store_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+    storesList.push({ id: newId, name: cleanName });
+    inventoryData[newId] = {};
+    saveStoresList();
+    saveInventory();
+    return { ok: true, id: newId };
+}
+
+function renameStore(id, newName) {
+    const cleanName = String(newName || "").trim();
+    if (!cleanName) return { ok: false, error: 'الاسم فارغ' };
+    const s = getStoreById(id);
+    if (!s) return { ok: false, error: 'المحل غير موجود' };
+    if (storesList.some(x => x.id !== id && normalizeArabic(x.name) === normalizeArabic(cleanName))) {
+        return { ok: false, error: 'الاسم موجود مسبقاً' };
+    }
+    s.name = cleanName;
+    saveStoresList();
+    return { ok: true };
+}
+
+function deleteStore(id) {
+    const idx = storesList.findIndex(s => s.id === id);
+    if (idx === -1) return { ok: false, error: 'المحل غير موجود' };
+    if (storesList.length <= 1) return { ok: false, error: 'لا يمكن حذف آخر محل' };
+    storesList.splice(idx, 1);
+    delete inventoryData[id];
+    saveStoresList();
+    saveInventory();
+    return { ok: true };
+}
+
+// ترحيل البيانات القديمة (من أسماء عربية إلى IDs)
+function migrateInventoryIfNeeded() {
+    const oldKeys = ['عيسى', 'ربيع', 'سوزان'];
+    const keyToId = { 'عيسى': 'store_aissa', 'ربيع': 'store_rabee', 'سوزان': 'store_suzan' };
+    let migrated = false;
+    
+    // إذا كانت inventoryData تحتوي على المفاتيح القديمة
+    if (inventoryData && (inventoryData['عيسى'] || inventoryData['ربيع'] || inventoryData['سوزان'])) {
+        oldKeys.forEach(oldKey => {
+            if (inventoryData[oldKey] && !inventoryData[keyToId[oldKey]]) {
+                inventoryData[keyToId[oldKey]] = inventoryData[oldKey];
+                migrated = true;
+            }
+            delete inventoryData[oldKey];
+        });
+    }
+    
+    // تأكد من وجود مفاتيح لكل المحلات
+    storesList.forEach(s => {
+        if (!inventoryData[s.id]) {
+            inventoryData[s.id] = {};
+        }
+    });
+    
+    // ترحيل السجلات (incomingHistory, outboundHistory)
+    const migrateHistory = (arr) => {
+        if (!Array.isArray(arr)) return arr;
+        return arr.map(h => {
+            if (h.store && keyToId[h.store]) {
+                return { ...h, store: keyToId[h.store] };
+            }
+            return h;
+        });
+    };
+    
+    const oldIncoming = incomingHistory;
+    const oldOutbound = outboundHistory;
+    incomingHistory = migrateHistory(incomingHistory);
+    outboundHistory = migrateHistory(outboundHistory);
+    
+    // ترحيل الفواتير (invoices.store)
+    savedInvoices = savedInvoices.map(inv => {
+        if (inv.store && keyToId[inv.store]) {
+            return { ...inv, store: keyToId[inv.store] };
+        }
+        return inv;
+    });
+    
+    if (migrated) {
+        console.log('✅ تم ترحيل بيانات المحلات القديمة إلى الصيغة الجديدة');
+        saveInventory();
+        saveIncomingHistory();
+        saveOutboundHistory();
+        saveInvoiceList();
+    }
+}
+
+function saveInventory(){ DB.setItem("inventoryData", JSON.stringify(inventoryData)); }
+function loadInventory(){
+    const d = DB.getItem("inventoryData");
+    if(d){ try{ inventoryData = JSON.parse(d); }catch(e){ inventoryData = {}; } }
+    if(!inventoryData || typeof inventoryData !== 'object') inventoryData = {};
+    loadStoresList();
+    storesList.forEach(s => {
+        if (!inventoryData[s.id]) inventoryData[s.id] = {};
+    });
+}
+
+function makeKey(item, size){ return (String(item||"").trim()) + "|" + (String(size||"").trim()); }
+function getStock(storeId, item, size){
+    if(!storeId) return null;
+    const key = makeKey(item, size);
+    return inventoryData[storeId] && inventoryData[storeId][key] !== undefined 
+        ? parseFloat(inventoryData[storeId][key]) || 0 
+        : 0;
+}
+function addStock(storeId, item, size, qty){
+    if(!storeId) return;
+    const q = safeParseFloat(qty, 0);
+    if(q <= 0) return;
+    const key = makeKey(item, size);
+    if(!inventoryData[storeId]) inventoryData[storeId] = {};
+    inventoryData[storeId][key] = (parseFloat(inventoryData[storeId][key]) || 0) + q;
+}
+function deductStock(storeId, item, size, qty){
+    if(!storeId) return;
+    const q = safeParseFloat(qty, 0);
+    if(q <= 0) return;
+    const key = makeKey(item, size);
+    if(!inventoryData[storeId]) inventoryData[storeId] = {};
+    inventoryData[storeId][key] = (parseFloat(inventoryData[storeId][key]) || 0) - q;
+}
+
+function saveIncomingHistory(){ DB.setItem("incomingHistory", JSON.stringify(incomingHistory)); }
+function loadIncomingHistory(){
+    const d = DB.getItem("incomingHistory");
+    if(d){ try{ incomingHistory = JSON.parse(d); }catch(e){ incomingHistory = []; } }
+    if(!Array.isArray(incomingHistory)) incomingHistory = [];
+}
+
+function saveOutboundHistory(){ DB.setItem("outboundHistory", JSON.stringify(outboundHistory)); }
+function loadOutboundHistory(){
+    const d = DB.getItem("outboundHistory");
+    if(d){ try{ outboundHistory = JSON.parse(d); }catch(e){ outboundHistory = []; } }
+    if(!Array.isArray(outboundHistory)) outboundHistory = [];
+}
+
+function getItemToBrandMap(){
+    const map = {};
+    for(let b in priceData.brands){
+        for(let p of priceData.brands[b]){
+            const key = makeKey(p.item, p.size);
+            if(!map[key]) map[key] = b;
+        }
+    }
+    return map;
+}
+
 // ==================== refreshFromStorage ====================
 function refreshFromStorage(){
     try {
@@ -563,9 +1160,6 @@ function refreshFromStorage(){
             const parsed = JSON.parse(inv); 
             if(parsed && typeof parsed === "object"){ 
                 inventoryData = parsed;
-                if(!inventoryData["عيسى"]) inventoryData["عيسى"] = {};
-                if(!inventoryData["ربيع"]) inventoryData["ربيع"] = {};
-                if(!inventoryData["سوزان"]) inventoryData["سوزان"] = {};
             }
         }
     } catch(e){}
@@ -581,11 +1175,15 @@ function refreshFromStorage(){
         const custs = DB.getItem("customersDirectory");
         if(custs){ const parsed = JSON.parse(custs); if(parsed && typeof parsed === "object") customersDirectory = parsed; }
     } catch(e){}
+    try {
+        const st = DB.getItem("storesList");
+        if(st){ const parsed = JSON.parse(st); if(Array.isArray(parsed) && parsed.length > 0) storesList = parsed; }
+    } catch(e){}
 }
 
 // ==================== بحث الأصناف ====================
-function searchItemsInStore(store, query, limit=20, includeZero=false){
-    if(!store || !inventoryData[store]){
+function searchItemsInStore(storeId, query, limit=20, includeZero=false){
+    if(!storeId || !inventoryData[storeId]){
         return { __noStore: true, __empty: true, results: [] };
     }
     const itemToBrand = {};
@@ -595,7 +1193,7 @@ function searchItemsInStore(store, query, limit=20, includeZero=false){
             if(!itemToBrand[key]) itemToBrand[key] = { brand: b, usd: p.usd || 0 };
         }
     }
-    const allKeys = Object.keys(inventoryData[store]);
+    const allKeys = Object.keys(inventoryData[storeId]);
     if(allKeys.length === 0){
         return { __noStore: false, __empty: true, results: [] };
     }
@@ -605,7 +1203,7 @@ function searchItemsInStore(store, query, limit=20, includeZero=false){
         const parts = key.split("|");
         const item = parts[0] || "";
         const size = parts[1] || "";
-        const qtyInStore = parseFloat(inventoryData[store][key]) || 0;
+        const qtyInStore = parseFloat(inventoryData[storeId][key]) || 0;
         if(!item) return;
         if(!includeZero && qtyInStore <= 0) return;
         const info = itemToBrand[key];
@@ -699,10 +1297,18 @@ function showExitConfirm(title, message, onDiscard, onCancel) {
     return overlay;
 }
 
-function checkPasscode(){const e=document.getElementById("passcodeBox").value.trim();if(e==="760741"){document.getElementById("lockScreen").style.display="none";sessionStorage.setItem("isUnlocked","true");}else alert("كلمة المرور غير صحيحة!");}
-document.getElementById("unlockBtn").onclick=checkPasscode;document.getElementById("passcodeBox").addEventListener("keypress",e=>{if(e.key==="Enter")checkPasscode();});if(sessionStorage.getItem("isUnlocked")==="true")document.getElementById("lockScreen").style.display="none";
+function checkPasscode(){
+    const e=document.getElementById("passcodeBox").value.trim();
+    if(e==="760741"){
+        document.getElementById("lockScreen").style.display="none";
+        sessionStorage.setItem("isUnlocked","true");
+    }else alert("كلمة المرور غير صحيحة!");
+}
+document.getElementById("unlockBtn").onclick=checkPasscode;
+document.getElementById("passcodeBox").addEventListener("keypress",e=>{if(e.key==="Enter")checkPasscode();});
+if(sessionStorage.getItem("isUnlocked")==="true")document.getElementById("lockScreen").style.display="none";
 
-// ==================== قفل التبويب (localStorage فقط - لا يعمل في APK) ====================
+// ==================== قفل التبويب (للمتصفح فقط) ====================
 (function(){
     if (window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()) return;
     const TAB_LOCK_KEY = "alwateen_active_tab";
@@ -783,149 +1389,180 @@ window.addEventListener("storage", (e) => {
                 }
             }
         } catch(err){}
-    } else if(["invoiceHistoryList","inventoryData","incomingHistory","outboundHistory","customersDirectory"].includes(e.key)){
+    } else if(["invoiceHistoryList","inventoryData","incomingHistory","outboundHistory","customersDirectory","storesList"].includes(e.key)){
         refreshFromStorage();
     }
 });
 
-// ==================== البيانات ====================
-let priceData={rate:15000,brands:{}};
-let itemUsageCounts={};
-let currentBrand=null;
-let invoiceItems=[];
-let savedInvoices=[];
-let customersDirectory={};
-let currentEditingInvoiceId=null;
-let currentInvoiceRate=null;
-let inventoryData = { "عيسى": {}, "ربيع": {}, "سوزان": {} };
-let incomingHistory = [];
-let outboundHistory = [];
-
-function saveInventory(){ DB.setItem("inventoryData", JSON.stringify(inventoryData)); }
-function loadInventory(){
-    const d = DB.getItem("inventoryData");
-    if(d){ try{ inventoryData = JSON.parse(d); }catch(e){} }
-    if(!inventoryData["عيسى"]) inventoryData["عيسى"] = {};
-    if(!inventoryData["ربيع"]) inventoryData["ربيع"] = {};
-    if(!inventoryData["سوزان"]) inventoryData["سوزان"] = {};
-}
-function makeKey(item, size){ return (String(item||"").trim()) + "|" + (String(size||"").trim()); }
-function getStock(store, item, size){
-    if(!store) return null;
-    const key = makeKey(item, size);
-    return inventoryData[store] && inventoryData[store][key] !== undefined 
-        ? parseFloat(inventoryData[store][key]) || 0 
-        : 0;
-}
-function addStock(store, item, size, qty){
-    if(!store) return;
-    const q = safeParseFloat(qty, 0);
-    if(q <= 0) return;
-    const key = makeKey(item, size);
-    if(!inventoryData[store]) inventoryData[store] = {};
-    inventoryData[store][key] = (parseFloat(inventoryData[store][key]) || 0) + q;
-}
-function deductStock(store, item, size, qty){
-    if(!store) return;
-    const q = safeParseFloat(qty, 0);
-    if(q <= 0) return;
-    const key = makeKey(item, size);
-    if(!inventoryData[store]) inventoryData[store] = {};
-    inventoryData[store][key] = (parseFloat(inventoryData[store][key]) || 0) - q;
-}
-
-function saveIncomingHistory(){ DB.setItem("incomingHistory", JSON.stringify(incomingHistory)); }
-function loadIncomingHistory(){
-    const d = DB.getItem("incomingHistory");
-    if(d){ try{ incomingHistory = JSON.parse(d); }catch(e){ incomingHistory = []; } }
-    if(!Array.isArray(incomingHistory)) incomingHistory = [];
-}
-
-function saveOutboundHistory(){ DB.setItem("outboundHistory", JSON.stringify(outboundHistory)); }
-function loadOutboundHistory(){
-    const d = DB.getItem("outboundHistory");
-    if(d){ try{ outboundHistory = JSON.parse(d); }catch(e){ outboundHistory = []; } }
-    if(!Array.isArray(outboundHistory)) outboundHistory = [];
-}
-
-function getItemToBrandMap(){
-    const map = {};
-    for(let b in priceData.brands){
-        for(let p of priceData.brands[b]){
-            const key = makeKey(p.item, p.size);
-            if(!map[key]) map[key] = b;
-        }
-    }
-    return map;
-}
-
-// ==================== شاشة اختيار المحل ====================
-function showStorePicker(title, subtitle, onSelect, onCancel){
+// ==================== شاشة اختيار المحل (ديناميكية) ====================
+function showStorePicker(title, subtitle, onSelect, onCancel, onManage){
     const overlay = document.createElement("div");
     overlay.className = "store-picker-overlay";
-    const stores = ["عيسى", "ربيع", "سوزان"];
+    
     let buttonsHtml = "";
-    stores.forEach(s => {
-        const count = Object.keys(inventoryData[s] || {}).length;
-        buttonsHtml += `<button class="store-picker-btn" data-store="${s}">
-            <span>🏪 ${s}</span>
+    storesList.forEach(s => {
+        const count = Object.keys(inventoryData[s.id] || {}).length;
+        buttonsHtml += `<button class="store-picker-btn" data-store="${escapeHtml(s.id)}">
+            <span>🏪 ${escapeHtml(s.name)}</span>
             <span class="count-badge">${count} صنف</span>
         </button>`;
     });
+    
+    // زر إدارة المحلات (يظهر فقط إذا مررت onManage)
+    const manageBtnHtml = onManage ? `<button id="manageStoresBtn" style="width:100%;padding:12px;background:#e67e22;color:white;border:none;border-radius:10px;font-weight:bold;font-size:1rem;cursor:pointer;margin-bottom:10px;">⚙️ إدارة المحلات</button>` : '';
+    
     overlay.innerHTML = `
         <div class="store-picker-card">
             <h3>${escapeHtml(title)}</h3>
             <p>${escapeHtml(subtitle || 'اختر المحل لعرض بياناته')}</p>
             ${buttonsHtml}
+            ${manageBtnHtml}
             <button class="store-picker-cancel">❌ إلغاء</button>
         </div>
     `;
     document.body.appendChild(overlay);
+    
     overlay.querySelectorAll(".store-picker-btn").forEach(btn => {
         btn.onclick = () => {
-            const store = btn.dataset.store;
+            const storeId = btn.dataset.store;
             overlay.remove();
-            if(onSelect) onSelect(store);
+            if(onSelect) onSelect(storeId);
         };
     });
+    
+    if(onManage){
+        overlay.querySelector("#manageStoresBtn").onclick = () => {
+            overlay.remove();
+            if(onManage) onManage();
+        };
+    }
+    
     overlay.querySelector(".store-picker-cancel").onclick = () => {
         overlay.remove();
         if(onCancel) onCancel();
     };
 }
+
+// ==================== إدارة المحلات (واجهة) ====================
+function openStoresManagement() {
+    refreshFromStorage();
+    loadStoresList();
+    
+    const overlay = document.createElement("div");
+    overlay.className = "history-modal";
+    
+    overlay.innerHTML = `
+        <div class="history-card" style="max-width:500px;">
+            <h3 style="margin-bottom:12px;font-weight:800;color:#e67e22;">⚙️ إدارة المحلات</h3>
+            
+            <div style="display:flex;gap:8px;margin-bottom:14px;">
+                <input type="text" id="newStoreName" placeholder="اسم محل جديد..." style="flex:1;padding:10px;border:1px solid #ccc;border-radius:6px;font-size:0.95rem;">
+                <button id="addStoreBtn" class="add-debt-btn" style="padding:10px 18px;">➕ إضافة</button>
+            </div>
+            
+            <div class="history-table-container">
+                <table class="history-table">
+                    <thead><tr><th>الاسم</th><th>عدد الأصناف</th><th>إجراءات</th></tr></thead>
+                    <tbody id="storesTbody"></tbody>
+                </table>
+            </div>
+            
+            <button id="closeStoresModal" class="compact-btn" style="margin-top:14px;background:#aaa;border:none;width:100%;font-weight:bold;border-radius:6px;padding:12px;">إغلاق</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    
+    const tbody = overlay.querySelector("#storesTbody");
+    
+    function renderStoresList() {
+        tbody.innerHTML = "";
+        if (storesList.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="padding:14px;text-align:center;">لا توجد محلات</td></tr>';
+            return;
+        }
+        storesList.forEach(s => {
+            const count = Object.keys(inventoryData[s.id] || {}).length;
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td contenteditable="true" class="store-name-cell" data-id="${escapeHtml(s.id)}" style="padding:10px;text-align:right;font-weight:700;">${escapeHtml(s.name)}</td>
+                <td>${count}</td>
+                <td>
+                    <button class="saveStoreName compact-btn primary" data-id="${escapeHtml(s.id)}" style="padding:4px 10px;font-size:0.75rem;">💾 حفظ</button>
+                    <button class="delStore history-delete" data-id="${escapeHtml(s.id)}" style="padding:4px 10px;font-size:0.75rem;">حذف</button>
+                </td>
+            `;
+            tr.querySelector(".saveStoreName").onclick = () => {
+                const cell = tr.querySelector(".store-name-cell");
+                const newName = cell.innerText.trim();
+                const result = renameStore(s.id, newName);
+                if (result.ok) {
+                    alert("✅ تم حفظ الاسم");
+                    renderStoresList();
+                } else {
+                    alert("⚠️ " + result.error);
+                    cell.innerText = s.name;
+                }
+            };
+            tr.querySelector(".delStore").onclick = () => {
+                if (!confirm(`⚠️ حذف محل "${s.name}"؟\n\nسيتم حذف كل بيانات الجرد المرتبطة به!\n\nلا يمكن التراجع!`)) return;
+                if (!confirm(`⚠️⚠️ تأكيد أخير: حذف "${s.name}" نهائياً؟`)) return;
+                const result = deleteStore(s.id);
+                if (result.ok) {
+                    alert("✅ تم الحذف");
+                    renderStoresList();
+                } else {
+                    alert("⚠️ " + result.error);
+                }
+            };
+            tbody.appendChild(tr);
+        });
+    }
+    renderStoresList();
+    
+    overlay.querySelector("#addStoreBtn").onclick = () => {
+        const inp = overlay.querySelector("#newStoreName");
+        const name = inp.value.trim();
+        if (!name) { alert("⚠️ أدخل اسماً"); return; }
+        const result = addStore(name);
+        if (result.ok) {
+            inp.value = "";
+            alert("✅ تمت الإضافة");
+            renderStoresList();
+        } else {
+            alert("⚠️ " + result.error);
+        }
+    };
+    
+    overlay.querySelector("#closeStoresModal").onclick = () => {
+        overlay.remove();
+    };
+}
 // ==================== قيمة الجرد بالدولار ====================
 function openInventoryValueManager(){
     refreshFromStorage();
+    loadStoresList();
     
     const overlay = document.createElement("div");
     overlay.className = "store-picker-overlay";
     
-    const stores = [
-        { id: "عيسى", label: "🏪 عيسى", color: "#16a085", badgeColor: "#16a085" },
-        { id: "ربيع", label: "🏪 ربيع", color: "#16a085", badgeColor: "#16a085" },
-        { id: "سوزان", label: "🏪 سوزان", color: "#16a085", badgeColor: "#16a085" },
-        { id: "all", label: "📦 جميع الأصناف", color: "#8e44ad", badgeColor: "#8e44ad" }
-    ];
-    
     let buttonsHtml = "";
-    stores.forEach(s => {
-        if(s.id === "all"){
-            const allItemsSet = new Set();
-            ["عيسى","ربيع","سوزان"].forEach(store => {
-                Object.keys(inventoryData[store] || {}).forEach(k => allItemsSet.add(k));
-            });
-            buttonsHtml += `<button class="store-picker-btn" data-store="${s.id}" style="border-color:#8e44ad;background:#f4ecf7;">
-                <span style="color:#6c3483;">${s.label}</span>
-                <span class="count-badge" style="background:#8e44ad;">${allItemsSet.size} صنف</span>
-            </button>`;
-        } else {
-            const count = Object.keys(inventoryData[s.id] || {}).length;
-            buttonsHtml += `<button class="store-picker-btn" data-store="${s.id}">
-                <span>${s.label}</span>
-                <span class="count-badge">${count} صنف</span>
-            </button>`;
-        }
+    storesList.forEach(s => {
+        const count = Object.keys(inventoryData[s.id] || {}).length;
+        buttonsHtml += `<button class="store-picker-btn" data-store="${escapeHtml(s.id)}">
+            <span>🏪 ${escapeHtml(s.name)}</span>
+            <span class="count-badge">${count} صنف</span>
+        </button>`;
     });
+    
+    // زر "جميع الأصناف"
+    const allItemsSet = new Set();
+    storesList.forEach(s => {
+        Object.keys(inventoryData[s.id] || {}).forEach(k => allItemsSet.add(k));
+    });
+    buttonsHtml += `<button class="store-picker-btn" data-store="all" style="border-color:#8e44ad;background:#f4ecf7;">
+        <span style="color:#6c3483;">📦 جميع الأصناف</span>
+        <span class="count-badge" style="background:#8e44ad;">${allItemsSet.size} صنف</span>
+    </button>`;
     
     overlay.innerHTML = `
         <div class="store-picker-card">
@@ -938,15 +1575,15 @@ function openInventoryValueManager(){
     document.body.appendChild(overlay);
     overlay.querySelectorAll(".store-picker-btn").forEach(btn => {
         btn.onclick = () => {
-            const store = btn.dataset.store;
+            const storeId = btn.dataset.store;
             overlay.remove();
-            openInventoryValueManagerForStore(store);
+            openInventoryValueManagerForStore(storeId);
         };
     });
     overlay.querySelector(".store-picker-cancel").onclick = () => { overlay.remove(); };
 }
 
-function openInventoryValueManagerForStore(initialStore){
+function openInventoryValueManagerForStore(initialStoreId){
     const old = document.getElementById("invValueFullScreen");
     if(old) old.remove();
     
@@ -957,13 +1594,13 @@ function openInventoryValueManagerForStore(initialStore){
     } catch(e){ customPrices = {}; }
     
     let hasChanges = false;
-    const isAllMode = (initialStore === "all");
+    const isAllMode = (initialStoreId === "all");
     
     const screen = document.createElement("div");
     screen.id = "invValueFullScreen";
     screen.style.cssText = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f4f7fb; z-index: 7600; overflow-y: auto; direction: rtl; font-family: 'Segoe UI', 'Tajawal', 'Cairo', sans-serif;`;
     
-    const storeLabel = isAllMode ? "جميع الأصناف" : initialStore;
+    const storeLabel = isAllMode ? "جميع الأصناف" : getStoreName(initialStoreId);
     const storeIcon = isAllMode ? "📦" : "🏪";
     
     screen.innerHTML = `
@@ -1049,8 +1686,8 @@ function openInventoryValueManagerForStore(initialStore){
     
     function getAllItemsUnified(){
         const unified = {};
-        ["عيسى","ربيع","سوزان"].forEach(store => {
-            const all = inventoryData[store] || {};
+        storesList.forEach(s => {
+            const all = inventoryData[s.id] || {};
             Object.keys(all).forEach(key => {
                 const parts = key.split("|");
                 const item = parts[0] || "";
@@ -1059,17 +1696,18 @@ function openInventoryValueManagerForStore(initialStore){
                 if(!item) return;
                 const ukey = priceKey(item, size);
                 if(!unified[ukey]){
-                    unified[ukey] = { item, size, quantities: { "عيسى": 0, "ربيع": 0, "سوزان": 0 }, totalQty: 0 };
+                    unified[ukey] = { item, size, quantities: {}, totalQty: 0 };
+                    storesList.forEach(st => { unified[ukey].quantities[st.id] = 0; });
                 }
-                unified[ukey].quantities[store] = qty;
+                unified[ukey].quantities[s.id] = qty;
                 unified[ukey].totalQty += qty;
             });
         });
         return unified;
     }
     
-    function getStoreItems(store){
-        const all = inventoryData[store] || {};
+    function getStoreItems(storeId){
+        const all = inventoryData[storeId] || {};
         const result = {};
         Object.keys(all).forEach(key => {
             const parts = key.split("|");
@@ -1084,7 +1722,8 @@ function openInventoryValueManagerForStore(initialStore){
     
     function renderStats(){
         if(isAllMode){
-            const storeTotals = { "عيسى": 0, "ربيع": 0, "سوزان": 0 };
+            const storeTotals = {};
+            storesList.forEach(s => { storeTotals[s.id] = 0; });
             let grandTotal = 0;
             let totalItems = 0;
             let pricedItems = 0;
@@ -1100,15 +1739,23 @@ function openInventoryValueManagerForStore(initialStore){
                 const price = getPrice(u.item, u.size);
                 if(price > 0){
                     pricedItems++;
-                    ["عيسى","ربيع","سوزان"].forEach(s => {
-                        const storeVal = price * (u.quantities[s] || 0);
-                        storeTotals[s] += storeVal;
+                    storesList.forEach(s => {
+                        const storeVal = price * (u.quantities[s.id] || 0);
+                        storeTotals[s.id] += storeVal;
                         grandTotal += storeVal;
                     });
                 } else {
                     unpricedItems++;
                 }
             });
+            
+            // بناء HTML لكل محل
+            const storesTotalsHtml = storesList.map(s => `
+                <div style="text-align:center;flex:1;min-width:90px;">
+                    <div style="font-size:0.75rem;color:#666;">🏪 ${escapeHtml(s.name)}</div>
+                    <div style="font-weight:900;color:#16a085;font-size:1.1rem;" dir="ltr">$ ${formatDecimal(storeTotals[s.id], 2)}</div>
+                </div>
+            `).join('');
             
             statsBox.innerHTML = `
                 <div style="background:linear-gradient(135deg, #8e44ad 0%, #6c3483 100%);border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 4px 14px rgba(142,68,173,0.25);">
@@ -1130,18 +1777,7 @@ function openInventoryValueManagerForStore(initialStore){
                     <div style="background:rgba(255,255,255,0.98);border-radius:10px;padding:12px;margin-bottom:10px;">
                         <div style="font-size:0.85rem;color:#666;font-weight:bold;margin-bottom:8px;text-align:center;">💰 قيمة كل محل:</div>
                         <div style="display:flex;justify-content:space-around;align-items:center;flex-wrap:wrap;gap:8px;">
-                            <div style="text-align:center;flex:1;min-width:90px;">
-                                <div style="font-size:0.75rem;color:#666;">🏪 عيسى</div>
-                                <div style="font-weight:900;color:#16a085;font-size:1.1rem;" dir="ltr">$ ${formatDecimal(storeTotals["عيسى"], 2)}</div>
-                            </div>
-                            <div style="text-align:center;flex:1;min-width:90px;">
-                                <div style="font-size:0.75rem;color:#666;">🏪 ربيع</div>
-                                <div style="font-weight:900;color:#16a085;font-size:1.1rem;" dir="ltr">$ ${formatDecimal(storeTotals["ربيع"], 2)}</div>
-                            </div>
-                            <div style="text-align:center;flex:1;min-width:90px;">
-                                <div style="font-size:0.75rem;color:#666;">🏪 سوزان</div>
-                                <div style="font-weight:900;color:#16a085;font-size:1.1rem;" dir="ltr">$ ${formatDecimal(storeTotals["سوزان"], 2)}</div>
-                            </div>
+                            ${storesTotalsHtml}
                         </div>
                     </div>
                     <div style="background:rgba(255,255,255,0.98);border-radius:10px;padding:16px;text-align:center;border:2px solid #6c3483;">
@@ -1154,7 +1790,7 @@ function openInventoryValueManagerForStore(initialStore){
             
             if(unpricedItems > 0){
                 unpricedBox.innerHTML = `
-                    <div style="background:#fdf7f7;border:2px solid #dc3545;border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                    <div style="background:#fdf7f7;border:2px solid #dc3545;border-radius:12px;padding:12px;">
                         <div style="display:flex;align-items:center;gap:10px;">
                             <div style="background:#dc3545;color:white;width:50px;height:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:1.5rem;font-weight:900;">⚠️</div>
                             <div>
@@ -1172,8 +1808,9 @@ function openInventoryValueManagerForStore(initialStore){
                 `;
             }
         } else {
-            const store = initialStore;
-            const all = inventoryData[store] || {};
+            const storeId = initialStoreId;
+            const storeName = getStoreName(storeId);
+            const all = inventoryData[storeId] || {};
             let totalValue = 0;
             let totalQty = 0;
             let totalItems = 0;
@@ -1199,7 +1836,7 @@ function openInventoryValueManagerForStore(initialStore){
             
             statsBox.innerHTML = `
                 <div style="background:linear-gradient(135deg, #e67e22 0%, #d35400 100%);border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 4px 14px rgba(230,126,34,0.25);">
-                    <div style="color:white;font-weight:900;font-size:1.05rem;margin-bottom:12px;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,0.2);">💰 قيمة جرد "${escapeHtml(store)}"</div>
+                    <div style="color:white;font-weight:900;font-size:1.05rem;margin-bottom:12px;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,0.2);">💰 قيمة جرد "${escapeHtml(storeName)}"</div>
                     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
                         <div style="background:rgba(255,255,255,0.95);border-radius:10px;padding:10px 6px;text-align:center;">
                             <div style="font-size:0.7rem;color:#666;font-weight:bold;margin-bottom:2px;">عدد الأصناف</div>
@@ -1224,7 +1861,7 @@ function openInventoryValueManagerForStore(initialStore){
             
             if(unpricedItems > 0){
                 unpricedBox.innerHTML = `
-                    <div style="background:#fdf7f7;border:2px solid #dc3545;border-radius:12px;padding:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                    <div style="background:#fdf7f7;border:2px solid #dc3545;border-radius:12px;padding:12px;">
                         <div style="display:flex;align-items:center;gap:10px;">
                             <div style="background:#dc3545;color:white;width:50px;height:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:1.5rem;font-weight:900;">⚠️</div>
                             <div>
@@ -1258,7 +1895,7 @@ function openInventoryValueManagerForStore(initialStore){
                 byBrand[brand].push({ key: ukey, item: u.item, size: u.size, quantities: u.quantities, totalQty: u.totalQty, isAllMode: true });
             });
         } else {
-            const storeItems = getStoreItems(initialStore);
+            const storeItems = getStoreItems(initialStoreId);
             Object.keys(storeItems).forEach(ukey => {
                 const it = storeItems[ukey];
                 const brand = itemToBrand[ukey] || "— بدون ماركة —";
@@ -1323,12 +1960,14 @@ function openInventoryValueManagerForStore(initialStore){
             table.style.cssText = "width:100%;border-collapse:collapse;font-size:0.85rem;background:white;";
             
             if(isAllMode){
+                // بناء رؤوس الأعمدة ديناميكياً
+                const storeCols = storesList.map(s => `<th style="background:#f4ecf7;color:#6c3483;padding:8px;text-align:center;width:60px;border-bottom:1px solid #e5d4ee;">${escapeHtml(s.name)}</th>`).join('');
                 table.innerHTML = `
                     <thead>
                         <tr>
                             <th style="background:#f4ecf7;color:#6c3483;padding:8px;text-align:right;border-bottom:1px solid #e5d4ee;">الصنف</th>
-                            <th style="background:#f4ecf7;color:#6c3483;padding:8px;text-align:center;width:70px;border-bottom:1px solid #e5d4ee;">القياس</th>
-                            <th style="background:#f4ecf7;color:#6c3483;padding:8px;text-align:center;border-bottom:1px solid #e5d4ee;">ع / ر / س</th>
+                            <th style="background:#f4ecf7;color:#6c3483;padding:8px;text-align:center;width:60px;border-bottom:1px solid #e5d4ee;">القياس</th>
+                            ${storeCols}
                             <th style="background:#f4ecf7;color:#6c3483;padding:8px;text-align:center;width:55px;border-bottom:1px solid #e5d4ee;">المجموع</th>
                             <th style="background:#f4ecf7;color:#6c3483;padding:8px;text-align:center;width:100px;border-bottom:1px solid #e5d4ee;">سعر القطعة</th>
                             <th style="background:#f4ecf7;color:#6c3483;padding:8px;text-align:center;width:100px;border-bottom:1px solid #e5d4ee;">سعر الدزينة</th>
@@ -1365,17 +2004,16 @@ function openInventoryValueManagerForStore(initialStore){
                 
                 let rowHtml = "";
                 if(isAllMode){
-                    const q1 = it.quantities["عيسى"] || 0;
-                    const q2 = it.quantities["ربيع"] || 0;
-                    const q3 = it.quantities["سوزان"] || 0;
+                    const qCells = storesList.map(s => {
+                        const q = it.quantities[s.id] || 0;
+                        const bg = q > 0 ? '#e8f5e9' : '#f0f0f0';
+                        const col = q > 0 ? '#16a085' : '#999';
+                        return `<td style="padding:8px;text-align:center;"><span style="display:inline-block;padding:2px 6px;background:${bg};color:${col};border-radius:4px;font-size:0.72rem;font-weight:bold;">${q}</span></td>`;
+                    }).join('');
                     rowHtml = `
                         <td style="padding:8px;text-align:right;font-weight:600;">${escapeHtml(it.item)}</td>
                         <td style="padding:8px;text-align:center;color:#666;">${escapeHtml(it.size || '-')}</td>
-                        <td style="padding:8px;text-align:center;white-space:nowrap;">
-                            <span style="display:inline-block;padding:2px 6px;background:${q1 > 0 ? '#e8f5e9' : '#f0f0f0'};color:${q1 > 0 ? '#16a085' : '#999'};border-radius:4px;font-size:0.72rem;font-weight:bold;margin:1px;">ع:${q1}</span>
-                            <span style="display:inline-block;padding:2px 6px;background:${q2 > 0 ? '#e8f5e9' : '#f0f0f0'};color:${q2 > 0 ? '#16a085' : '#999'};border-radius:4px;font-size:0.72rem;font-weight:bold;margin:1px;">ر:${q2}</span>
-                            <span style="display:inline-block;padding:2px 6px;background:${q3 > 0 ? '#e8f5e9' : '#f0f0f0'};color:${q3 > 0 ? '#16a085' : '#999'};border-radius:4px;font-size:0.72rem;font-weight:bold;margin:1px;">س:${q3}</span>
-                        </td>
+                        ${qCells}
                         <td style="padding:8px;text-align:center;font-weight:900;color:#0a4b2e;">${itQty}</td>
                     `;
                 } else {
@@ -1527,12 +2165,13 @@ function openInventoryValueManagerForStore(initialStore){
     
     if(!isAllMode){
         screen.querySelector("#invValueResetBtn").onclick = () => {
-            const store = initialStore;
-            const pwd = prompt(`🔒 لتصفير جميع أسعار "${store}"، أدخل كلمة المرور:`);
+            const storeId = initialStoreId;
+            const storeName = getStoreName(storeId);
+            const pwd = prompt(`🔒 لتصفير جميع أسعار "${storeName}"، أدخل كلمة المرور:`);
             if(pwd === null) return;
             if(pwd.trim() !== "760741"){ alert("❌ كلمة المرور غير صحيحة"); return; }
             
-            const storeItems = getStoreItems(store);
+            const storeItems = getStoreItems(storeId);
             let count = 0;
             Object.keys(storeItems).forEach(ukey => {
                 if(customPrices[ukey] !== undefined){
@@ -1543,7 +2182,7 @@ function openInventoryValueManagerForStore(initialStore){
             hasChanges = true;
             saveCustomPrices();
             renderValueTable(searchInput.value);
-            alert(`✅ تم تصفير ${count} سعر مرتبط بأصناف "${store}".`);
+            alert(`✅ تم تصفير ${count} سعر مرتبط بأصناف "${storeName}".`);
         };
     }
     
@@ -1556,7 +2195,8 @@ function openInventoryValueManagerForStore(initialStore){
         if(isAllMode){
             text = `💰 قيمة الجرد - جميع المحلات — ${dateStr}\n\n`;
             const unified = getAllItemsUnified();
-            const storeTotals = { "عيسى": 0, "ربيع": 0, "سوزان": 0 };
+            const storeTotals = {};
+            storesList.forEach(s => { storeTotals[s.id] = 0; });
             const itemToBrand = buildItemToBrandMap();
             const byBrand = {};
             
@@ -1568,9 +2208,9 @@ function openInventoryValueManagerForStore(initialStore){
                 const price = getPrice(u.item, u.size);
                 if(price <= 0) unpricedCount++;
                 byBrand[brand].push({ ...u, price });
-                ["عيسى","ربيع","سوزان"].forEach(s => {
-                    storeTotals[s] += price * (u.quantities[s] || 0);
-                    grandTotal += price * (u.quantities[s] || 0);
+                storesList.forEach(s => {
+                    storeTotals[s.id] += price * (u.quantities[s.id] || 0);
+                    grandTotal += price * (u.quantities[s.id] || 0);
                 });
             });
             
@@ -1581,26 +2221,25 @@ function openInventoryValueManagerForStore(initialStore){
                     const rowTotal = it.price * it.totalQty;
                     brandTotal += rowTotal;
                     const priceLabel = it.price > 0 ? formatDecimal(it.price, 2) : "بدون تسعير";
-                    const q1 = it.quantities["عيسى"] || 0;
-                    const q2 = it.quantities["ربيع"] || 0;
-                    const q3 = it.quantities["سوزان"] || 0;
-                    text += `  • ${it.item}${it.size ? ' ('+it.size+')' : ''} [ع:${q1} ر:${q2} س:${q3}] — ${it.totalQty} × $${priceLabel} = $${formatDecimal(rowTotal, 2)}\n`;
+                    const qParts = storesList.map(s => `${s.name[0]}:${it.quantities[s.id] || 0}`).join(' ');
+                    text += `  • ${it.item}${it.size ? ' ('+it.size+')' : ''} [${qParts}] — ${it.totalQty} × $${priceLabel} = $${formatDecimal(rowTotal, 2)}\n`;
                 });
                 text += `  الإجمالي: $${formatDecimal(brandTotal, 2)}\n\n`;
             });
             
             text += `━━━━━━━━━━━━━━━━━━━\n`;
-            text += `🏪 عيسى: $${formatDecimal(storeTotals["عيسى"], 2)}\n`;
-            text += `🏪 ربيع: $${formatDecimal(storeTotals["ربيع"], 2)}\n`;
-            text += `🏪 سوزان: $${formatDecimal(storeTotals["سوزان"], 2)}\n`;
+            storesList.forEach(s => {
+                text += `🏪 ${s.name}: $${formatDecimal(storeTotals[s.id], 2)}\n`;
+            });
             text += `━━━━━━━━━━━━━━━━━━━\n`;
             text += `💰 الإجمالي الكلي: $${formatDecimal(grandTotal, 2)}\n`;
             text += `💵 ما يعادل: ${Math.round(grandTotal * priceData.rate).toLocaleString('en-US')} ل.س\n`;
             if(unpricedCount > 0) text += `⚠️ أصناف بدون تسعير: ${unpricedCount}\n`;
         } else {
-            const store = initialStore;
-            text = `💰 قيمة جرد "${store}" — ${dateStr}\n\n`;
-            const storeItems = getStoreItems(store);
+            const storeId = initialStoreId;
+            const storeName = getStoreName(storeId);
+            text = `💰 قيمة جرد "${storeName}" — ${dateStr}\n\n`;
+            const storeItems = getStoreItems(storeId);
             const itemToBrand = buildItemToBrandMap();
             const byBrand = {};
             
@@ -1668,22 +2307,26 @@ function openInventoryValueManagerForStore(initialStore){
 // ==================== إدارة الجرد ====================
 function openInventoryManager(){
     refreshFromStorage();
-    showStorePicker("📦 إدارة الجرد", "اختر المحل لعرض بياناته فقط", function(store){
-        openInventoryManagerForStore(store);
-    }, null);
+    showStorePicker("📦 إدارة الجرد", "اختر المحل لعرض بياناته فقط", function(storeId){
+        openInventoryManagerForStore(storeId);
+    }, null, function(){
+        // زر إدارة المحلات
+        openStoresManagement();
+    });
 }
 
-function openInventoryManagerForStore(initialStore){
+function openInventoryManagerForStore(initialStoreId){
     const old = document.getElementById("inventoryFullScreen");
     if(old) old.remove();
 
+    const storeName = getStoreName(initialStoreId);
     const screen = document.createElement("div");
     screen.id = "inventoryFullScreen";
     screen.style.cssText = `position: fixed;top: 0; left: 0;width: 100%; height: 100%;background: #f4f7fb;z-index: 7500;overflow-y: auto;direction: rtl;font-family: 'Segoe UI', 'Tajawal', 'Cairo', sans-serif;`;
 
     screen.innerHTML = `
         <div style="position:sticky;top:0;background:#16a085;color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:10;">
-            <h2 style="font-size:1.2rem;font-weight:800;margin:0;">📦 إدارة الجرد - ${escapeHtml(initialStore)}</h2>
+            <h2 style="font-size:1.2rem;font-weight:800;margin:0;">📦 إدارة الجرد - ${escapeHtml(storeName)}</h2>
             <div style="display:flex;gap:6px;flex-wrap:wrap;">
                 <button id="invChangeStoreBtn" style="background:#3498db;color:white;border:none;padding:8px 14px;border-radius:8px;font-weight:bold;font-size:0.85rem;cursor:pointer;">🔄 تغيير المحل</button>
                 <button id="invFsClose" style="background:#dc3545;color:white;border:none;padding:8px 16px;border-radius:8px;font-weight:bold;font-size:0.9rem;cursor:pointer;">✕ إغلاق</button>
@@ -1692,7 +2335,7 @@ function openInventoryManagerForStore(initialStore){
         <div style="padding:12px;max-width:900px;margin:0 auto;">
             <div style="background:white;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
                 <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-                    <span style="font-weight:bold;font-size:1rem;">🏪 المحل الحالي: <span style="color:#16a085;font-size:1.1rem;">${escapeHtml(initialStore)}</span></span>
+                    <span style="font-weight:bold;font-size:1rem;">🏪 المحل الحالي: <span style="color:#16a085;font-size:1.1rem;">${escapeHtml(storeName)}</span></span>
                     <button id="invIncomingBtn" class="compact-btn" style="background:#2980b9;color:white;border:none;font-weight:bold;padding:10px 16px;">📥 فاتورة وارد</button>
                     <button id="invIncomingHistoryBtn" class="compact-btn" style="background:#34495e;color:white;border:none;font-weight:bold;padding:10px 16px;">📋 سجل الوارد</button>
                     <button id="invOutboundHistoryBtn" class="compact-btn" style="background:#e67e22;color:white;border:none;font-weight:bold;padding:10px 16px;">📤 سجل التخريج</button>
@@ -1702,7 +2345,7 @@ function openInventoryManagerForStore(initialStore){
             <div id="invStatsBox"></div>
             
             <div style="background:#eaf4fb;border:2px solid #2980b9;border-radius:12px;padding:12px;margin-bottom:12px;">
-                <div style="font-weight:800;color:#2980b9;margin-bottom:8px;font-size:0.95rem;">📥 استيراد صنف موجود من الماركات</div>
+                <div style="font-weight:800;color:#2980b9;margin-bottom:8px;font-size:0.95rem;">📥 استيراد صنف موجود من الأصناف والأسعار</div>
                 <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
                     <label style="font-weight:bold;font-size:0.85rem;color:#2980b9;">🏷️ الماركة:</label>
                     <select id="invImportBrand" class="filter-select" style="flex:1;min-width:150px;padding:10px;font-size:0.9rem;font-weight:bold;border:2px solid #2980b9;">
@@ -1755,7 +2398,7 @@ function openInventoryManagerForStore(initialStore){
     document.body.appendChild(screen);
     document.body.style.overflow = "hidden";
 
-    const storeSelect = { value: initialStore };
+    const storeId = initialStoreId;
     const brandsContainer = screen.querySelector("#invBrandsContainer");
     const searchInput = screen.querySelector("#invSearchInput");
     const statsBox = screen.querySelector("#invStatsBox");
@@ -1800,7 +2443,6 @@ function openInventoryManagerForStore(initialStore){
     };
 
     screen.querySelector("#invImportBtn").onclick = () => {
-        const store = storeSelect.value;
         const brand = invImportBrand.value;
         const val = invImportItem.value;
         const qty = safeParseFloat(convertArabicNumbersToEnglish(invImportQty.value).replace(/[^0-9.-]/g,''), 0);
@@ -1812,19 +2454,19 @@ function openInventoryManagerForStore(initialStore){
         let obj;
         try { obj = JSON.parse(val); } catch(e){ alert("⚠️ خطأ في الصنف."); return; }
 
-        if(!workingData[store]) workingData[store] = {};
+        if(!workingData[storeId]) workingData[storeId] = {};
         const key = makeKey(obj.item, obj.size);
-        if(workingData[store][key] !== undefined){
+        if(workingData[storeId][key] !== undefined){
             if(!confirm(`الصنف "${obj.item}" موجود مسبقاً. هل تريد إضافة الكمية؟`)) return;
-            workingData[store][key] = (parseFloat(workingData[store][key])||0) + qty;
+            workingData[storeId][key] = (parseFloat(workingData[storeId][key])||0) + qty;
         } else {
-            workingData[store][key] = qty;
+            workingData[storeId][key] = qty;
         }
         hasChanges = true;
         renderTable(searchInput.value);
         invImportQty.value = "0";
         invImportItem.value = "";
-        alert(`✅ تم استيراد "${obj.item}" إلى جرد "${store}".`);
+        alert(`✅ تم استيراد "${obj.item}" إلى جرد "${storeName}".`);
     };
 
     function buildItemToBrandMap(){
@@ -1839,8 +2481,7 @@ function openInventoryManagerForStore(initialStore){
     }
 
     function updateStats(){
-        const store = storeSelect.value;
-        const all = workingData[store] || {};
+        const all = workingData[storeId] || {};
         const itemToBrand = buildItemToBrandMap();
         const stats = { totalItems: 0, totalQty: 0, brandsCount: 0, brands: {} };
         Object.keys(all).forEach(key => {
@@ -1879,7 +2520,7 @@ function openInventoryManagerForStore(initialStore){
 
         statsBox.innerHTML = `
             <div style="background:linear-gradient(135deg, #16a085 0%, #0a4b2e 100%);border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 4px 14px rgba(22,160,133,0.25);">
-                <div style="color:white;font-weight:900;font-size:1.05rem;margin-bottom:12px;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,0.2);">📊 إحصائيات جرد "${escapeHtml(store)}"</div>
+                <div style="color:white;font-weight:900;font-size:1.05rem;margin-bottom:12px;text-align:center;text-shadow:0 1px 2px rgba(0,0,0,0.2);">📊 إحصائيات جرد "${escapeHtml(storeName)}"</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
                     <div style="background:rgba(255,255,255,0.95);border-radius:10px;padding:10px 6px;text-align:center;">
                         <div style="font-size:0.7rem;color:#666;font-weight:bold;margin-bottom:2px;">عدد الماركات</div>
@@ -1902,10 +2543,10 @@ function openInventoryManagerForStore(initialStore){
         `;
     }
 
-    function generateBrandText(store, brandName, brandItems){
+    function generateBrandText(brandName, brandItems){
         const now = new Date();
         const dateStr = String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear();
-        let text = `جرد بضاعة (${brandName}) الموجودة لدى (${store}) بتاريخ (${dateStr})\n\n`;
+        let text = `جرد بضاعة (${brandName}) الموجودة لدى (${storeName}) بتاريخ (${dateStr})\n\n`;
         const sorted = [...brandItems].sort((a,b) => a.item.localeCompare(b.item, 'ar'));
         sorted.forEach(it => {
             const label = it.size ? `${it.item}  ${it.size}` : it.item;
@@ -1917,9 +2558,8 @@ function openInventoryManagerForStore(initialStore){
     }
 
     function renderTable(filter=""){
-        const store = storeSelect.value;
         brandsContainer.innerHTML = "";
-        const all = workingData[store] || {};
+        const all = workingData[storeId] || {};
         const itemToBrand = buildItemToBrandMap();
         const byBrand = {};
         Object.keys(all).forEach(key => {
@@ -1993,8 +2633,8 @@ function openInventoryManagerForStore(initialStore){
                 tr.querySelector(".inv-qty").addEventListener("blur", e => {
                     let newQty = safeParseFloat(convertArabicNumbersToEnglish(e.target.innerText).replace(/[^0-9.-]/g,''), 0);
                     if(newQty < 0) newQty = 0;
-                    if(workingData[store][r.key] !== newQty) hasChanges = true;
-                    workingData[store][r.key] = newQty;
+                    if(workingData[storeId][r.key] !== newQty) hasChanges = true;
+                    workingData[storeId][r.key] = newQty;
                     e.target.innerText = newQty;
                     updateStats();
                 });
@@ -2003,9 +2643,9 @@ function openInventoryManagerForStore(initialStore){
                     if(!newItem){ e.target.innerText = r.item; return; }
                     const newKey = makeKey(newItem, r.size);
                     if(newKey !== r.key){
-                        const val = workingData[store][r.key];
-                        delete workingData[store][r.key];
-                        workingData[store][newKey] = (workingData[store][newKey]||0) + val;
+                        const val = workingData[storeId][r.key];
+                        delete workingData[storeId][r.key];
+                        workingData[storeId][newKey] = (workingData[storeId][newKey]||0) + val;
                         hasChanges = true;
                         renderTable(searchInput.value);
                     }
@@ -2014,16 +2654,16 @@ function openInventoryManagerForStore(initialStore){
                     const newSize = e.target.innerText.trim();
                     const newKey = makeKey(r.item, newSize);
                     if(newKey !== r.key){
-                        const val = workingData[store][r.key];
-                        delete workingData[store][r.key];
-                        workingData[store][newKey] = (workingData[store][newKey]||0) + val;
+                        const val = workingData[storeId][r.key];
+                        delete workingData[storeId][r.key];
+                        workingData[storeId][newKey] = (workingData[storeId][newKey]||0) + val;
                         hasChanges = true;
                         renderTable(searchInput.value);
                     }
                 });
                 tr.querySelector(".inv-del").onclick = () => {
                     if(confirm("حذف هذا الصنف من الجرد؟")){
-                        delete workingData[store][r.key];
+                        delete workingData[storeId][r.key];
                         hasChanges = true;
                         renderTable(searchInput.value);
                     }
@@ -2033,7 +2673,7 @@ function openInventoryManagerForStore(initialStore){
             tableWrap.appendChild(table);
             brandBox.appendChild(tableWrap);
             brandBox.querySelector(".inv-copy-brand").onclick = async () => {
-                const text = generateBrandText(store, brandName, items);
+                const text = generateBrandText(brandName, items);
                 const ok = await copyToClipboard(text);
                 if(ok){ alert(`✅ تم نسخ جرد ماركة "${brandName}" إلى الحافظة.`); }
             };
@@ -2044,11 +2684,11 @@ function openInventoryManagerForStore(initialStore){
                     if(brandProducts.length === 0){ alert(`⚠️ ماركة "${brandName}" فارغة.`); return; }
                     const newItems = brandProducts.filter(p => {
                         const key = makeKey(p.item, p.size);
-                        return workingData[store][key] === undefined;
+                        return workingData[storeId][key] === undefined;
                     });
                     if(newItems.length === 0){ alert(`✅ جميع أصناف "${brandName}" موجودة مسبقاً.`); return; }
                     if(!confirm(`📥 استيراد ${newItems.length} صنفاً من "${brandName}"؟`)) return;
-                    newItems.forEach(p => { workingData[store][makeKey(p.item, p.size)] = 0; });
+                    newItems.forEach(p => { workingData[storeId][makeKey(p.item, p.size)] = 0; });
                     hasChanges = true;
                     renderTable(searchInput.value);
                     alert(`✅ تم استيراد ${newItems.length} صنفاً.`);
@@ -2062,15 +2702,13 @@ function openInventoryManagerForStore(initialStore){
     searchInput.addEventListener("input", e => renderTable(e.target.value));
 
     screen.querySelector("#invCheckMatchBtn").onclick = () => {
-        const store = storeSelect.value;
         inventoryData = JSON.parse(JSON.stringify(workingData));
         saveInventory();
         hasChanges = false;
-        openCheckMatchDialog(store);
+        openCheckMatchDialog(storeId);
     };
 
     screen.querySelector("#invAddRowBtn").onclick = () => {
-        const store = storeSelect.value;
         const itemInput = screen.querySelector("#invNewItem");
         const sizeInput = screen.querySelector("#invNewSize");
         const qtyInput = screen.querySelector("#invNewQty");
@@ -2089,13 +2727,13 @@ function openInventoryManagerForStore(initialStore){
         if(usd <= 0){ alert("⚠️ يجب إدخال سعر أكبر من صفر."); priceInput.focus(); return; }
         if(qty < 0){ alert("⚠️ الكمية لا يمكن أن تكون سالبة."); qtyInput.focus(); return; }
 
-        if(!workingData[store]) workingData[store] = {};
+        if(!workingData[storeId]) workingData[storeId] = {};
         const key = makeKey(item, size);
-        if(workingData[store][key] !== undefined){
+        if(workingData[storeId][key] !== undefined){
             if(!confirm(`الصنف "${item}" موجود مسبقاً. هل تريد إضافة الكمية؟`)) return;
-            workingData[store][key] = (parseFloat(workingData[store][key])||0) + qty;
+            workingData[storeId][key] = (parseFloat(workingData[storeId][key])||0) + qty;
         } else {
-            workingData[store][key] = qty;
+            workingData[storeId][key] = qty;
         }
 
         const alreadyExists = priceData.brands[selectedBrand].some(p => 
@@ -2114,7 +2752,7 @@ function openInventoryManagerForStore(initialStore){
         priceInput.value = "0";
         itemInput.focus();
         renderTable(searchInput.value);
-        alert(`✅ تم إضافة "${item}" إلى جرد "${store}".`);
+        alert(`✅ تم إضافة "${item}" إلى جرد "${storeName}".`);
     };
 
     screen.querySelector("#invIncomingBtn").onclick = () => {
@@ -2150,9 +2788,8 @@ function openInventoryManagerForStore(initialStore){
     };
 
     screen.querySelector("#invCopyAllBtn").onclick = async () => {
-        const store = storeSelect.value;
         const itemToBrand = buildItemToBrandMap();
-        const all = workingData[store] || {};
+        const all = workingData[storeId] || {};
         const byBrand = {};
         Object.keys(all).forEach(key => {
             const parts = key.split("|");
@@ -2166,7 +2803,7 @@ function openInventoryManagerForStore(initialStore){
         if(brandNames.length === 0){ alert("⚠️ لا توجد أصناف"); return; }
         let fullText = "";
         brandNames.forEach((brandName, idx) => {
-            fullText += generateBrandText(store, brandName, byBrand[brandName]);
+            fullText += generateBrandText(brandName, byBrand[brandName]);
             if(idx < brandNames.length - 1) fullText += "\n\n";
         });
         const ok = await copyToClipboard(fullText);
@@ -2174,31 +2811,29 @@ function openInventoryManagerForStore(initialStore){
     };
 
     screen.querySelector("#invClearStoreBtn").onclick = () => {
-        const store = storeSelect.value;
-        const pwd = prompt(`🔒 لحذف جميع أصناف "${store}"، أدخل كلمة المرور:`);
+        const pwd = prompt(`🔒 لحذف جميع أصناف "${storeName}"، أدخل كلمة المرور:`);
         if(pwd === null) return;
         if(pwd.trim() !== "760741"){ alert("❌ كلمة المرور غير صحيحة"); return; }
-        const itemCount = Object.keys(workingData[store] || {}).length;
+        const itemCount = Object.keys(workingData[storeId] || {}).length;
         if(itemCount === 0){ alert("⚠️ لا توجد أصناف"); return; }
-        if(!confirm(`⚠️ حذف جميع أصناف "${store}"؟ (${itemCount} صنف)\n\nلا يمكن التراجع!`)) return;
+        if(!confirm(`⚠️ حذف جميع أصناف "${storeName}"؟ (${itemCount} صنف)\n\nلا يمكن التراجع!`)) return;
         if(!confirm(`⚠️⚠️ تحذير أخير: حذف ${itemCount} صنف نهائياً؟`)) return;
-        workingData[store] = {};
-        inventoryData[store] = {};
+        workingData[storeId] = {};
+        inventoryData[storeId] = {};
         saveInventory();
         hasChanges = false;
         renderTable(searchInput.value);
-        alert(`✅ تم حذف جميع أصناف "${store}"`);
+        alert(`✅ تم حذف جميع أصناف "${storeName}"`);
     };
 
     screen.querySelector("#invClearIncomingBtn").onclick = () => {
-        const store = storeSelect.value;
-        const pwd = prompt(`🔒 لحذف سجل الوارد لمحل "${store}"، أدخل كلمة المرور:`);
+        const pwd = prompt(`🔒 لحذف سجل الوارد لمحل "${storeName}"، أدخل كلمة المرور:`);
         if(pwd === null) return;
         if(pwd.trim() !== "760741"){ alert("❌ كلمة المرور غير صحيحة"); return; }
-        const count = incomingHistory.filter(h => h.store === store).length;
+        const count = incomingHistory.filter(h => h.store === storeId).length;
         if(count === 0){ alert("⚠️ لا توجد سجلات وارد"); return; }
-        if(!confirm(`⚠️ حذف سجل الوارد لمحل "${store}"؟ (${count} فاتورة)\n\nلن يؤثر على الجرد الحالي.`)) return;
-        incomingHistory = incomingHistory.filter(h => h.store !== store);
+        if(!confirm(`⚠️ حذف سجل الوارد لمحل "${storeName}"؟ (${count} فاتورة)\n\nلن يؤثر على الجرد الحالي.`)) return;
+        incomingHistory = incomingHistory.filter(h => h.store !== storeId);
         saveIncomingHistory();
         alert(`✅ تم حذف سجل الوارد (${count} فاتورة)`);
     };
@@ -2262,9 +2897,10 @@ function openInventoryManagerForStore(initialStore){
 
     renderTable();
 }
+
 // ==================== فحص التطابق ====================
-function checkInventoryBrandMatch(store){
-    const all = inventoryData[store] || {};
+function checkInventoryBrandMatch(storeId){
+    const all = inventoryData[storeId] || {};
     const keys = Object.keys(all);
     const brandsMap = {};
     for(let b in priceData.brands){
@@ -2289,13 +2925,14 @@ function checkInventoryBrandMatch(store){
     return { matched, noBrand, noPrice, total: keys.length };
 }
 
-function openCheckMatchDialog(store){
-    const result = checkInventoryBrandMatch(store);
+function openCheckMatchDialog(storeId){
+    const storeName = getStoreName(storeId);
+    const result = checkInventoryBrandMatch(storeId);
     let html = `
         <div style="background:white;border-radius:14px;padding:22px;max-width:650px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 10px 40px rgba(0,0,0,0.3);">
-            <h3 style="margin:0 0 14px;color:#0a4b2e;text-align:center;font-weight:800;">🔍 فحص تطابق الجرد مع الماركات</h3>
+            <h3 style="margin:0 0 14px;color:#0a4b2e;text-align:center;font-weight:800;">🔍 فحص تطابق الجرد مع الأصناف والأسعار</h3>
             <div style="background:#f0f8f5;border:1px solid #16a085;border-radius:8px;padding:12px;margin-bottom:14px;">
-                <div style="font-weight:800;color:#0a4b2e;margin-bottom:8px;font-size:1rem;">📊 المحل: ${escapeHtml(store)}</div>
+                <div style="font-weight:800;color:#0a4b2e;margin-bottom:8px;font-size:1rem;">📊 المحل: ${escapeHtml(storeName)}</div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.9rem;">
                     <div style="background:#e8f5e9;padding:8px;border-radius:6px;text-align:center;">
                         <div style="font-weight:bold;color:#27ae60;font-size:1.3rem;">${result.matched.length}</div>
@@ -2350,7 +2987,7 @@ function openCheckMatchDialog(store){
         html += `</div></div>`;
     }
     if(result.total === 0){
-        html += `<div style="background:#f0f0f0;border:1px solid #ccc;border-radius:8px;padding:20px;text-align:center;color:#666;">جرد "${escapeHtml(store)}" فارغ — لا توجد أصناف للفحص.</div>`;
+        html += `<div style="background:#f0f0f0;border:1px solid #ccc;border-radius:8px;padding:20px;text-align:center;color:#666;">جرد "${escapeHtml(storeName)}" فارغ — لا توجد أصناف للفحص.</div>`;
     }
     html += `
             <div style="display:flex;gap:8px;margin-top:14px;">
@@ -2368,27 +3005,28 @@ function openCheckMatchDialog(store){
 // ==================== فاتورة الوارد ====================
 function openIncomingInvoice(){
     refreshFromStorage();
-    showStorePicker("📥 فاتورة وارد", "اختر المحل لإضافة الوارد إليه", function(store){
-        openIncomingInvoiceForStore(store);
-    }, null);
+    showStorePicker("📥 فاتورة وارد", "اختر المحل لإضافة الوارد إليه", function(storeId){
+        openIncomingInvoiceForStore(storeId);
+    }, null, null);
 }
 
-function openIncomingInvoiceForStore(initialStore){
+function openIncomingInvoiceForStore(initialStoreId){
     const old = document.getElementById("incomingFullScreen");
     if(old) old.remove();
 
+    const storeName = getStoreName(initialStoreId);
     const screen = document.createElement("div");
     screen.id = "incomingFullScreen";
     screen.style.cssText = `position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f4f7fb; z-index: 8000; overflow-y: auto; direction: rtl; font-family: 'Segoe UI', 'Tajawal', 'Cairo', sans-serif;`;
 
     screen.innerHTML = `
         <div style="position:sticky;top:0;background:#2980b9;color:white;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.15);z-index:10;">
-            <h2 style="font-size:1.2rem;font-weight:800;margin:0;">📥 فاتورة وارد - ${escapeHtml(initialStore)}</h2>
+            <h2 style="font-size:1.2rem;font-weight:800;margin:0;">📥 فاتورة وارد - ${escapeHtml(storeName)}</h2>
             <button id="incFsBack" style="background:#f39c12;color:white;border:none;padding:8px 16px;border-radius:8px;font-weight:bold;font-size:0.9rem;cursor:pointer;">🔙 رجوع إلى الجرد</button>
         </div>
         <div style="padding:12px;max-width:900px;margin:0 auto;">
             <div style="background:white;border-radius:12px;padding:12px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);border:2px solid #2980b9;">
-                <div style="font-weight:800;color:#2980b9;font-size:1rem;">🏪 المحل: <span style="color:#16a085;font-size:1.1rem;">${escapeHtml(initialStore)}</span></div>
+                <div style="font-weight:800;color:#2980b9;font-size:1rem;">🏪 المحل: <span style="color:#16a085;font-size:1.1rem;">${escapeHtml(storeName)}</span></div>
             </div>
             
             <div id="incSearchBox" style="background:white;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);border:2px solid #2980b9;">
@@ -2416,7 +3054,6 @@ function openIncomingInvoiceForStore(initialStore){
                     <button id="incAddManualBtn" class="compact-btn" style="background:#2980b9;color:white;border:none;font-weight:bold;padding:8px 14px;">➕ إضافة صنف موجود</button>
                     <button id="incAddNewItemBtn" class="compact-btn" style="background:#27ae60;color:white;border:none;font-weight:bold;padding:8px 14px;">➕ صنف جديد للماركة</button>
                 </div>
-                <div id="incManualHint" style="font-size:0.75rem;color:#666;margin-top:6px;">💡 اختر ماركة وصنفاً موجوداً، أو أضف صنفاً جديداً للماركة الأساسية.</div>
             </div>
             
             <div style="background:white;border-radius:12px;padding:12px;box-shadow:0 2px 6px rgba(0,0,0,0.08);">
@@ -2439,7 +3076,7 @@ function openIncomingInvoiceForStore(initialStore){
     const topSearch = screen.querySelector("#incomingTopSearch");
     const rowsContainer = screen.querySelector("#incomingRowsContainer");
     const countLabel = screen.querySelector("#incCount");
-    const storeSelect = { value: initialStore };
+    const storeId = initialStoreId;
 
     let rows = [];
     let dropdown = null;
@@ -2498,7 +3135,6 @@ function openIncomingInvoiceForStore(initialStore){
     };
 
     screen.querySelector("#incAddManualBtn").onclick = () => {
-        const store = storeSelect.value;
         const brand = incBrandSelect.value;
         const itemVal = incItemSelect.value;
         const size = incNewSize.value.trim();
@@ -2512,7 +3148,7 @@ function openIncomingInvoiceForStore(initialStore){
         try { obj = JSON.parse(itemVal); } catch(e){ alert("⚠️ خطأ في الصنف."); return; }
         const itemName = obj.item;
 
-        const existingQty = getStock(store, itemName, size);
+        const existingQty = getStock(storeId, itemName, size);
         rows.push({ item: itemName, size, qty, brand, qtyInStore: existingQty });
         renderRows();
 
@@ -2524,7 +3160,6 @@ function openIncomingInvoiceForStore(initialStore){
     };
 
     screen.querySelector("#incAddNewItemBtn").onclick = () => {
-        const store = storeSelect.value;
         const brand = incBrandSelect.value;
         if(!brand){ alert("⚠️ اختر الماركة أولاً."); return; }
 
@@ -2550,7 +3185,7 @@ function openIncomingInvoiceForStore(initialStore){
         priceData.brands[brand].push({ item: cleanName, size, usd });
         savePrices();
 
-        const existingQty = getStock(store, cleanName, size);
+        const existingQty = getStock(storeId, cleanName, size);
         rows.push({ item: cleanName, size, qty, brand, qtyInStore: existingQty });
         renderRows();
 
@@ -2564,15 +3199,14 @@ function openIncomingInvoiceForStore(initialStore){
 
     function openResultsDropdown(query){
         closeDropdown();
-        const store = storeSelect.value;
         if(!query || !query.trim()) return;
 
-        const resObj = searchItemsInStore(store, query, 20, true);
+        const resObj = searchItemsInStore(storeId, query, 20, true);
 
         if(resObj.__empty){
             const dd = document.createElement("div");
             dd.style.cssText = `position: fixed;background: white;border: 2px solid #ffc107;border-radius: 10px;padding: 14px;z-index: 9000;box-shadow: 0 8px 24px rgba(0,0,0,0.25);text-align: center;font-weight: bold;color: #856404;`;
-            dd.innerHTML = `⚠️ جرد "${store}" فارغ!<br><span style="font-size:0.8rem;font-weight:normal;">أضف أصنافاً من شاشة الجرد أولاً.</span>`;
+            dd.innerHTML = `⚠️ جرد "${storeName}" فارغ!<br><span style="font-size:0.8rem;font-weight:normal;">أضف أصنافاً من شاشة الجرد أولاً.</span>`;
             const rect = topSearch.getBoundingClientRect();
             dd.style.top = (rect.bottom + 4) + "px";
             dd.style.left = rect.left + "px";
@@ -2612,7 +3246,7 @@ function openIncomingInvoiceForStore(initialStore){
                     if(touchMoved) return;
                     ev.preventDefault();
                     ev.stopPropagation();
-                    const existingQty = getStock(store, m.item, m.size);
+                    const existingQty = getStock(storeId, m.item, m.size);
                     rows.push({ item: m.item, size: m.size || "", qty: 1, brand: m.brand, qtyInStore: existingQty });
                     topSearch.value = "";
                     closeDropdown();
@@ -2699,7 +3333,6 @@ function openIncomingInvoiceForStore(initialStore){
 
     screen.querySelector("#incomingSaveBtn").onclick = () => {
         closeDropdown();
-        const store = storeSelect.value;
         const valid = [];
         const invalid = [];
         rows.forEach(r => {
@@ -2718,26 +3351,23 @@ function openIncomingInvoiceForStore(initialStore){
                 const parsed = JSON.parse(freshInv);
                 if(parsed && typeof parsed === "object"){
                     inventoryData = parsed;
-                    if(!inventoryData["عيسى"]) inventoryData["عيسى"] = {};
-                    if(!inventoryData["ربيع"]) inventoryData["ربيع"] = {};
-                    if(!inventoryData["سوزان"]) inventoryData["سوزان"] = {};
                 }
             }
         } catch(e){}
 
-        valid.forEach(r => { addStock(store, r.item, r.size, r.qty); });
+        valid.forEach(r => { addStock(storeId, r.item, r.size, r.qty); });
         saveInventory();
 
         const now = new Date();
         const dateStr = String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear()+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
         incomingHistory.unshift({
-            id: Date.now(), store: store, date: dateStr,
+            id: Date.now(), store: storeId, date: dateStr,
             items: valid.map(v => ({ item: v.item, size: v.size, qty: v.qty }))
         });
         if(incomingHistory.length > 500) incomingHistory.pop();
         saveIncomingHistory();
 
-        const itemsWithNewStock = valid.map(v => ({ item: v.item, size: v.size, newQty: getStock(store, v.item, v.size) }));
+        const itemsWithNewStock = valid.map(v => ({ item: v.item, size: v.size, newQty: getStock(storeId, v.item, v.size) }));
         let copyText = `هذه الأصناف التي تم التعديل عليها بعد إضافة الوارد بتاريخ (${dateStr})\n\n`;
         itemsWithNewStock.sort((a,b) => a.item.localeCompare(b.item, 'ar'));
         itemsWithNewStock.forEach(it => {
@@ -2751,7 +3381,7 @@ function openIncomingInvoiceForStore(initialStore){
         setTimeout(() => {
             showModifiedItemsDialog(
                 "✅ تمت إضافة الوارد بنجاح",
-                `تمت إضافة <strong>${valid.length}</strong> صنف إلى مخزون "<strong>${store}</strong>"`,
+                `تمت إضافة <strong>${valid.length}</strong> صنف إلى مخزون "<strong>${escapeHtml(storeName)}</strong>"`,
                 copyText,
                 () => { openInventoryManager(); }
             );
@@ -2829,16 +3459,20 @@ function showModifiedItemsDialog(title, subtitle, copyText, onClose){
 // ==================== سجل الوارد ====================
 function viewIncomingHistory(){
     refreshFromStorage();
-    let currentStore = "عيسى";
+    loadStoresList();
+    let currentStoreId = storesList[0] ? storesList[0].id : null;
     const modal = document.createElement("div");
     modal.className = "history-modal";
+    
+    const storeBtnsHtml = storesList.map(s => 
+        `<button class="compact-btn incHistStoreBtn" data-store="${escapeHtml(s.id)}" style="flex:1;background:${s.id === currentStoreId ? '#16a085' : '#ddd'};color:${s.id === currentStoreId ? 'white' : '#333'};border:none;font-weight:bold;">🏪 ${escapeHtml(s.name)}</button>`
+    ).join('');
+    
     modal.innerHTML = `
         <div class="history-card">
             <h3 style="margin-bottom:12px;font-weight:800;color:#2980b9;">📥 سجل الوارد</h3>
             <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;">
-                <button id="incHistStoreBtn_عيسى" class="compact-btn" style="flex:1;background:#16a085;color:white;border:none;font-weight:bold;">🏪 عيسى</button>
-                <button id="incHistStoreBtn_ربيع" class="compact-btn" style="flex:1;background:#ddd;color:#333;border:none;font-weight:bold;">🏪 ربيع</button>
-                <button id="incHistStoreBtn_سوزان" class="compact-btn" style="flex:1;background:#ddd;color:#333;border:none;font-weight:bold;">🏪 سوزان</button>
+                ${storeBtnsHtml}
                 <button id="clearIncomingHistoryBtn" class="compact-btn" style="background:#dc3545;color:white;border:none;">🗑️ مسح</button>
             </div>
             <input type="text" id="incomingHistorySearch" placeholder="بحث..." style="width:100%;padding:9px 12px;margin-bottom:12px;border:1px solid #ccc;border-radius:6px;">
@@ -2854,19 +3488,19 @@ function viewIncomingHistory(){
     document.body.appendChild(modal);
     const tbody = modal.querySelector("#incomingHistoryTbody");
     const searchInp = modal.querySelector("#incomingHistorySearch");
-    const btnAissa = modal.querySelector("#incHistStoreBtn_عيسى");
-    const btnRabee = modal.querySelector("#incHistStoreBtn_ربيع");
-    const btnSuzan = modal.querySelector("#incHistStoreBtn_سوزان");
+    
     function updateStoreButtons(){
-        [btnAissa, btnRabee, btnSuzan].forEach(b => { b.style.background = "#ddd"; b.style.color = "#333"; });
-        if(currentStore === "عيسى"){ btnAissa.style.background = "#16a085"; btnAissa.style.color = "white"; }
-        else if(currentStore === "ربيع"){ btnRabee.style.background = "#16a085"; btnRabee.style.color = "white"; }
-        else if(currentStore === "سوزان"){ btnSuzan.style.background = "#16a085"; btnSuzan.style.color = "white"; }
+        modal.querySelectorAll(".incHistStoreBtn").forEach(b => {
+            const isActive = b.dataset.store === currentStoreId;
+            b.style.background = isActive ? "#16a085" : "#ddd";
+            b.style.color = isActive ? "white" : "#333";
+        });
     }
+    
     function renderList(){
         tbody.innerHTML = "";
         const q = searchInp.value.trim().toLowerCase();
-        let list = incomingHistory.filter(h => h.store === currentStore);
+        let list = incomingHistory.filter(h => h.store === currentStoreId);
         if(q) list = list.filter(h => (h.items||[]).some(it => (it.item||"").toLowerCase().includes(q)));
         if(!list.length){
             tbody.innerHTML = '<tr><td colspan="4" style="padding:16px;text-align:center;color:#666;">لا توجد سجلات</td></tr>';
@@ -2883,7 +3517,7 @@ function viewIncomingHistory(){
             tr.querySelector(".inc-det").onclick = (e) => {
                 e.stopPropagation();
                 const details = (h.items||[]).map(it => `• ${it.item}${it.size?' ('+it.size+')':''} — ${it.qty}`).join("\n");
-                alert(`📥 وارد\n${h.date}\n${h.store}\n\n${details}`);
+                alert(`📥 وارد\n${h.date}\n${getStoreName(h.store)}\n\n${details}`);
             };
             tr.querySelector(".inc-hdel").onclick = (e) => {
                 e.stopPropagation();
@@ -2894,13 +3528,19 @@ function viewIncomingHistory(){
             tbody.appendChild(tr);
         });
     }
-    btnAissa.onclick = () => { currentStore = "عيسى"; updateStoreButtons(); renderList(); };
-    btnRabee.onclick = () => { currentStore = "ربيع"; updateStoreButtons(); renderList(); };
-    btnSuzan.onclick = () => { currentStore = "سوزان"; updateStoreButtons(); renderList(); };
+    
+    modal.querySelectorAll(".incHistStoreBtn").forEach(b => {
+        b.onclick = () => {
+            currentStoreId = b.dataset.store;
+            updateStoreButtons();
+            renderList();
+        };
+    });
+    
     searchInp.addEventListener("input", renderList);
     modal.querySelector("#clearIncomingHistoryBtn").onclick = () => {
-        if(!confirm(`مسح سجل وارد "${currentStore}"؟`)) return;
-        incomingHistory = incomingHistory.filter(h => h.store !== currentStore);
+        if(!confirm(`مسح سجل وارد "${getStoreName(currentStoreId)}"؟`)) return;
+        incomingHistory = incomingHistory.filter(h => h.store !== currentStoreId);
         saveIncomingHistory();
         renderList();
     };
@@ -2911,16 +3551,20 @@ function viewIncomingHistory(){
 // ==================== سجل التخريج ====================
 function viewOutboundHistory(){
     refreshFromStorage();
-    let currentStore = "عيسى";
+    loadStoresList();
+    let currentStoreId = storesList[0] ? storesList[0].id : null;
     const modal = document.createElement("div");
     modal.className = "history-modal";
+    
+    const storeBtnsHtml = storesList.map(s => 
+        `<button class="compact-btn outHistStoreBtn" data-store="${escapeHtml(s.id)}" style="flex:1;background:${s.id === currentStoreId ? '#16a085' : '#ddd'};color:${s.id === currentStoreId ? 'white' : '#333'};border:none;font-weight:bold;">🏪 ${escapeHtml(s.name)}</button>`
+    ).join('');
+    
     modal.innerHTML = `
         <div class="history-card">
             <h3 style="margin-bottom:12px;font-weight:800;color:#e67e22;">📤 سجل التخريج</h3>
             <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;">
-                <button id="outHistStoreBtn_عيسى" class="compact-btn" style="flex:1;background:#16a085;color:white;border:none;font-weight:bold;">🏪 عيسى</button>
-                <button id="outHistStoreBtn_ربيع" class="compact-btn" style="flex:1;background:#ddd;color:#333;border:none;font-weight:bold;">🏪 ربيع</button>
-                <button id="outHistStoreBtn_سوزان" class="compact-btn" style="flex:1;background:#ddd;color:#333;border:none;font-weight:bold;">🏪 سوزان</button>
+                ${storeBtnsHtml}
                 <button id="clearOutboundHistoryBtn" class="compact-btn" style="background:#dc3545;color:white;border:none;">🗑️ مسح</button>
             </div>
             <input type="text" id="outboundHistorySearch" placeholder="بحث برقم الفاتورة أو الزبون أو الصنف..." style="width:100%;padding:9px 12px;margin-bottom:12px;border:1px solid #ccc;border-radius:6px;">
@@ -2936,19 +3580,19 @@ function viewOutboundHistory(){
     document.body.appendChild(modal);
     const tbody = modal.querySelector("#outboundHistoryTbody");
     const searchInp = modal.querySelector("#outboundHistorySearch");
-    const btnAissa = modal.querySelector("#outHistStoreBtn_عيسى");
-    const btnRabee = modal.querySelector("#outHistStoreBtn_ربيع");
-    const btnSuzan = modal.querySelector("#outHistStoreBtn_سوزان");
+    
     function updateStoreButtons(){
-        [btnAissa, btnRabee, btnSuzan].forEach(b => { b.style.background = "#ddd"; b.style.color = "#333"; });
-        if(currentStore === "عيسى"){ btnAissa.style.background = "#16a085"; btnAissa.style.color = "white"; }
-        else if(currentStore === "ربيع"){ btnRabee.style.background = "#16a085"; btnRabee.style.color = "white"; }
-        else if(currentStore === "سوزان"){ btnSuzan.style.background = "#16a085"; btnSuzan.style.color = "white"; }
+        modal.querySelectorAll(".outHistStoreBtn").forEach(b => {
+            const isActive = b.dataset.store === currentStoreId;
+            b.style.background = isActive ? "#16a085" : "#ddd";
+            b.style.color = isActive ? "white" : "#333";
+        });
     }
+    
     function renderList(){
         tbody.innerHTML = "";
         const q = searchInp.value.trim().toLowerCase();
-        let list = outboundHistory.filter(h => h.store === currentStore);
+        let list = outboundHistory.filter(h => h.store === currentStoreId);
         if(q) list = list.filter(h =>
             (h.invoiceNumber||"").toLowerCase().includes(q) ||
             (h.customer||"").toLowerCase().includes(q) ||
@@ -2974,13 +3618,13 @@ function viewOutboundHistory(){
             tr.querySelector(".out-det").onclick = (e) => {
                 e.stopPropagation();
                 const details = (h.items||[]).map(it => `• ${it.item}${it.size?' ('+it.size+')':''} — ${it.qty}`).join("\n");
-                alert(`📤 تخريج\n${h.date}\nالمحل: ${h.store}\nفاتورة رقم: ${h.invoiceNumber||'-'}\nالزبون: ${h.customer||'-'}\n\n${details}`);
+                alert(`📤 تخريج\n${h.date}\nالمحل: ${getStoreName(h.store)}\nفاتورة رقم: ${h.invoiceNumber||'-'}\nالزبون: ${h.customer||'-'}\n\n${details}`);
             };
             const restoreBtn = tr.querySelector(".out-restore");
             if(restoreBtn){
                 restoreBtn.onclick = (e) => {
                     e.stopPropagation();
-                    if(!confirm(`↩️ استرجاع جميع أصناف هذه الفاتورة إلى مخزون "${currentStore}"؟\n\nسيتم إرجاع الكميات المخَرَّجة فقط.`)) return;
+                    if(!confirm(`↩️ استرجاع جميع أصناف هذه الفاتورة إلى مخزون "${getStoreName(currentStoreId)}"؟\n\nسيتم إرجاع الكميات المخَرَّجة فقط.`)) return;
                     try {
                         const freshInv = DB.getItem("inventoryData");
                         if(freshInv){
@@ -2988,8 +3632,8 @@ function viewOutboundHistory(){
                             if(parsed && typeof parsed === "object") inventoryData = parsed;
                         }
                     } catch(e){}
-                    if(!inventoryData[currentStore]) inventoryData[currentStore] = {};
-                    (h.items||[]).forEach(it => { addStock(currentStore, it.item, it.size, it.qty); });
+                    if(!inventoryData[currentStoreId]) inventoryData[currentStoreId] = {};
+                    (h.items||[]).forEach(it => { addStock(currentStoreId, it.item, it.size, it.qty); });
                     saveInventory();
                     h.restored = true;
                     saveOutboundHistory();
@@ -3000,13 +3644,19 @@ function viewOutboundHistory(){
             tbody.appendChild(tr);
         });
     }
-    btnAissa.onclick = () => { currentStore = "عيسى"; updateStoreButtons(); renderList(); };
-    btnRabee.onclick = () => { currentStore = "ربيع"; updateStoreButtons(); renderList(); };
-    btnSuzan.onclick = () => { currentStore = "سوزان"; updateStoreButtons(); renderList(); };
+    
+    modal.querySelectorAll(".outHistStoreBtn").forEach(b => {
+        b.onclick = () => {
+            currentStoreId = b.dataset.store;
+            updateStoreButtons();
+            renderList();
+        };
+    });
+    
     searchInp.addEventListener("input", renderList);
     modal.querySelector("#clearOutboundHistoryBtn").onclick = () => {
-        if(!confirm(`مسح سجل التخريج لمحل "${currentStore}"؟`)) return;
-        outboundHistory = outboundHistory.filter(h => h.store !== currentStore);
+        if(!confirm(`مسح سجل التخريج لمحل "${getStoreName(currentStoreId)}"؟`)) return;
+        outboundHistory = outboundHistory.filter(h => h.store !== currentStoreId);
         saveOutboundHistory();
         renderList();
     };
@@ -3143,7 +3793,6 @@ function printThermalInvoice() {
     if (footerBlock) { footerBlock.style.display = printSettings.showSaleType !== false ? "block" : "none"; }
     window.print();
 }
-
 // ==================== التخزين ====================
 function savePrices(){DB.setItem("prices",JSON.stringify(priceData));}
 function saveUsageCounts(){DB.setItem("itemUsageCounts",JSON.stringify(itemUsageCounts));}
@@ -3154,7 +3803,7 @@ function exportFullBackupFile(){
     let inventoryCustomPrices = {};
     try { inventoryCustomPrices = JSON.parse(DB.getItem("inventoryCustomPrices")||"{}"); } catch(e){}
     const data = {
-        version: "3.1",
+        version: "4.0",
         backupDate: new Date().toISOString(),
         prices: priceData,
         usage: itemUsageCounts,
@@ -3162,6 +3811,7 @@ function exportFullBackupFile(){
         customers: customersDirectory,
         printSettings: printSettings,
         inventory: inventoryData,
+        storesList: storesList,
         incomingHistory: incomingHistory,
         outboundHistory: outboundHistory,
         inventoryCustomPrices: inventoryCustomPrices,
@@ -3188,11 +3838,15 @@ function importFullBackupFile(e){
             if(d.invoices){savedInvoices=d.invoices;saveInvoiceList();}
             if(d.customers){customersDirectory=d.customers;saveCustomers();}
             if(d.printSettings){printSettings=Object.assign(printSettings,d.printSettings);savePrintSettings();}
+            if(d.storesList && Array.isArray(d.storesList) && d.storesList.length > 0){
+                storesList = d.storesList;
+                saveStoresList();
+            }
             if(d.inventory){
                 inventoryData = d.inventory;
-                if(!inventoryData["عيسى"]) inventoryData["عيسى"]={};
-                if(!inventoryData["ربيع"]) inventoryData["ربيع"]={};
-                if(!inventoryData["سوزان"]) inventoryData["سوزان"]={};
+                storesList.forEach(s => {
+                    if(!inventoryData[s.id]) inventoryData[s.id] = {};
+                });
                 saveInventory();
             }
             if(d.incomingHistory && Array.isArray(d.incomingHistory)){ incomingHistory = d.incomingHistory; saveIncomingHistory(); }
@@ -3211,6 +3865,8 @@ function importFullBackupFile(e){
             }
             document.getElementById("usdRate").value=priceData.rate||15000;
             alert("✅ تمت الاستعادة بنجاح! جميع البيانات تم استرجاعها.");
+            // إعادة تحميل الصفحة لتطبيق التغييرات
+            setTimeout(() => location.reload(), 500);
         }catch(err){ alert("❌ خطأ في الملف: " + err.message); }
         hideLoading();
     };
@@ -3232,7 +3888,7 @@ function loadData(){
     if(invs)try{savedInvoices=JSON.parse(invs);}catch(e){}
 }
 
-// ==================== إدارة الزبائن والماركات ====================
+// ==================== إدارة الزبائن ====================
 function viewCustomersManagementModal(){
     const modal=document.createElement("div");
     modal.className="history-modal";
@@ -3263,10 +3919,11 @@ function viewCustomersManagementModal(){
     modal.querySelector("#custSearchInput").addEventListener("input",e=>{renderCustomers(e.target.value);});
 }
 
+// ==================== إدارة الأصناف والأسعار (الماركات) ====================
 function viewBrandsManagementModal(){
     const modal=document.createElement("div");
     modal.className="history-modal";
-    modal.innerHTML='<div class="history-card"><h3 style="margin-bottom:12px;font-weight:800;color:#0a4b2e;">🏷️ الماركات</h3><div style="display:flex;gap:8px;margin-bottom:12px;"><input type="text" id="newBrandName" placeholder="اسم ماركة جديدة" style="flex:1;border:1px solid #ccc;padding:8px 14px;border-radius:6px;"><button id="addBrandBtn" class="primary compact-btn">إضافة</button></div><div class="history-table-container"><table class="brands-table"><thead><tr><th>الماركة</th><th>إجراءات</th></tr></thead><tbody id="brandsTableBody"></tbody></table></div><button onclick="this.closest(\'.history-modal\').remove()" style="margin-top:14px;background:#aaa;border:none;padding:8px;width:100%;font-weight:bold;border-radius:6px;">إغلاق</button></div>';
+    modal.innerHTML='<div class="history-card"><h3 style="margin-bottom:12px;font-weight:800;color:#0a4b2e;">🏷️ الأصناف والأسعار</h3><div style="display:flex;gap:8px;margin-bottom:12px;"><input type="text" id="newBrandName" placeholder="اسم ماركة جديدة" style="flex:1;border:1px solid #ccc;padding:8px 14px;border-radius:6px;"><button id="addBrandBtn" class="primary compact-btn">إضافة</button></div><div class="history-table-container"><table class="brands-table"><thead><tr><th>الماركة</th><th>إجراءات</th></tr></thead><tbody id="brandsTableBody"></tbody></table></div><button onclick="this.closest(\'.history-modal\').remove()" style="margin-top:14px;background:#aaa;border:none;padding:8px;width:100%;font-weight:bold;border-radius:6px;">إغلاق</button></div>';
     document.body.appendChild(modal);
     function renderBrands(){
         const tb=modal.querySelector("#brandsTableBody");
@@ -3401,10 +4058,26 @@ function renderProducts(){
     });
 }
 function addProduct(){if(currentBrand){priceData.brands[currentBrand].push({item:"صنف جديد",size:"",usd:0});savePrices();renderProducts();}}
+
 // ==================== الفاتورة ====================
 function updateSaveButtonLabel(){const b=document.getElementById("saveInvoiceActionBtn");if(b)b.innerText=currentEditingInvoiceId?"💾 حفظ التعديل":"💾 حفظ الفاتورة";}
+
+function refreshStoresSelect(){
+    const sel = document.getElementById("invoiceStoreSelect");
+    if(!sel) return;
+    sel.innerHTML = '<option value="">-- اختر المحل --</option>';
+    storesList.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.id;
+        opt.textContent = "🏪 " + s.name;
+        sel.appendChild(opt);
+    });
+}
+
 function createInvoice(){
     refreshFromStorage();
+    loadStoresList();
+    refreshStoresSelect();
     invoiceItems=[];
     currentEditingInvoiceId=null;
     currentInvoiceRate=null;
@@ -3433,11 +4106,11 @@ function createInvoice(){
 }
 
 document.getElementById("invoiceStoreSelect")?.addEventListener("change", function(){
-    const store = this.value;
+    const storeId = this.value;
     const searchInp = document.getElementById("invoiceSearchInput");
-    if(store){
+    if(storeId){
         searchInp.disabled = false;
-        searchInp.placeholder = `🔍 ابحث في جرد (${store})...`;
+        searchInp.placeholder = `🔍 ابحث في جرد (${getStoreName(storeId)})...`;
     } else {
         searchInp.disabled = true;
         searchInp.placeholder = "🔍 اختر المحل أولاً...";
@@ -3599,8 +4272,8 @@ function setupInvoiceSearch(){
     const inp=document.getElementById("invoiceSearchInput"),res=document.getElementById("invoiceSearchResults");
     inp.addEventListener("input",()=>{
         const q=inp.value.trim().toLowerCase();
-        const store = document.getElementById("invoiceStoreSelect").value;
-        if(!store){
+        const storeId = document.getElementById("invoiceStoreSelect").value;
+        if(!storeId){
             res.innerHTML = "<div style='padding:12px;background:#fff3cd;color:#856404;font-weight:bold;text-align:center;'>⚠️ اختر المحل أولاً</div>";
             res.style.display = "block";
             return;
@@ -3609,9 +4282,9 @@ function setupInvoiceSearch(){
         const currency=document.getElementById("invoiceCurrencySelect").value;
         const isRoundingActive=document.getElementById("toggleRoundingCheckbox").checked;
         const activeRate = currentInvoiceRate !== null ? currentInvoiceRate : priceData.rate;
-        const resObj = searchItemsInStore(store, q, 20, false);
+        const resObj = searchItemsInStore(storeId, q, 20, false);
         if(resObj.__empty){
-            res.innerHTML = `<div style='padding:12px;background:#fff3cd;color:#856404;font-weight:bold;text-align:center;'>⚠️ جرد "${escapeHtml(store)}" فارغ!</div>`;
+            res.innerHTML = `<div style='padding:12px;background:#fff3cd;color:#856404;font-weight:bold;text-align:center;'>⚠️ جرد "${escapeHtml(getStoreName(storeId))}" فارغ!</div>`;
             res.style.display = "block";
             return;
         }
@@ -3739,8 +4412,8 @@ function addManualDebtWithCustomerList(callback) {
 
 // ==================== حفظ الفاتورة ====================
 function saveInvoiceToHistory(){
-    const storeName = document.getElementById("invoiceStoreSelect") ? document.getElementById("invoiceStoreSelect").value : "";
-    if(!storeName){
+    const storeId = document.getElementById("invoiceStoreSelect") ? document.getElementById("invoiceStoreSelect").value : "";
+    if(!storeId){
         alert("⚠️ يجب اختيار المحل قبل الحفظ.");
         return;
     }
@@ -3755,7 +4428,7 @@ function saveInvoiceToHistory(){
         const currencyNow = document.getElementById("invoiceCurrencySelect").value;
         const shouldDeduct = true;
         const invNumberForCheck = document.getElementById("invNumValue").innerText;
-        if(storeName && shouldDeduct && !currentEditingInvoiceId){
+        if(storeId && shouldDeduct && !currentEditingInvoiceId){
             if(!window.__deductedInvoices) window.__deductedInvoices = new Set();
             if(window.__deductedInvoices.has(invNumberForCheck)){
                 hideLoading();
@@ -3779,17 +4452,17 @@ function saveInvoiceToHistory(){
             }
             let insufficient = [];
             Object.values(groupedItems).forEach(g => {
-                const available = getStock(storeName, g.item, g.size);
+                const available = getStock(storeId, g.item, g.size);
                 if(available < g.qty){
                     insufficient.push(`• ${g.item}${g.size?' ('+g.size+')':''} — متوفر: ${available} ، مطلوب: ${g.qty}`);
                 }
             });
             if(insufficient.length > 0){
-                const ok = confirm(`⚠️ بعض الكميات غير كافية في "${storeName}":\n\n${insufficient.join("\n")}\n\nالمتابعة؟`);
+                const ok = confirm(`⚠️ بعض الكميات غير كافية في "${getStoreName(storeId)}":\n\n${insufficient.join("\n")}\n\nالمتابعة؟`);
                 if(!ok){ hideLoading(); return; }
             }
             Object.values(groupedItems).forEach(g => {
-                if(g.qty > 0){ deductStock(storeName, g.item, g.size, g.qty); }
+                if(g.qty > 0){ deductStock(storeId, g.item, g.size, g.qty); }
             });
             saveInventory();
             window.__deductedInvoices.add(invNumberForCheck);
@@ -3851,7 +4524,7 @@ function saveInvoiceToHistory(){
             remaining:remainingVal, items:JSON.parse(JSON.stringify(invoiceItems)),
             isMigrated:false, migratedFromId:migratedFromInvoiceId,
             migratedToNumber:migratedToNumber, isManualDebt:false,
-            rateAtCreation: activeRate, store: storeName
+            rateAtCreation: activeRate, store: storeId
         };
         if(currentEditingInvoiceId){
             const idx=savedInvoices.findIndex(i=>i.id===currentEditingInvoiceId);
@@ -3871,7 +4544,7 @@ function saveInvoiceToHistory(){
         }
         saveInvoiceList();
         let copyText = "";
-        if(storeName && shouldDeduct && !currentEditingInvoiceId){
+        if(storeId && shouldDeduct && !currentEditingInvoiceId){
             const now = new Date();
             const timeStr = String(now.getDate()).padStart(2,'0')+'/'+String(now.getMonth()+1).padStart(2,'0')+'/'+now.getFullYear()+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
             
@@ -3881,7 +4554,7 @@ function saveInvoiceToHistory(){
             if(outItems.length > 0){
                 outboundHistory.unshift({
                     id: Date.now(),
-                    store: storeName,
+                    store: storeId,
                     date: timeStr,
                     invoiceNumber: invNumber,
                     customer: cust,
@@ -3893,7 +4566,7 @@ function saveInvoiceToHistory(){
             }
             
             const itemsWithNewStock = invoiceItems.map(it => ({
-                item: it.item, size: it.size, newQty: getStock(storeName, it.item, it.size)
+                item: it.item, size: it.size, newQty: getStock(storeId, it.item, it.size)
             })).filter(it => it.item);
             itemsWithNewStock.sort((a,b) => a.item.localeCompare(b.item, 'ar'));
             copyText = `هذه الأصناف التي تم التعديل عليها بعد تخريج الفاتورة رقم (${invNumber}) بتاريخ (${timeStr})\n\n`;
@@ -3910,7 +4583,7 @@ function saveInvoiceToHistory(){
             setTimeout(() => {
                 showModifiedItemsDialog(
                     `✅ تم حفظ الفاتورة رقم ${invNumber}`,
-                    `تم خصم الأصناف من مخزون "<strong>${escapeHtml(storeName)}</strong>"`,
+                    `تم خصم الأصناف من مخزون "<strong>${escapeHtml(getStoreName(storeId))}</strong>"`,
                     copyText,
                     null
                 );
@@ -3981,11 +4654,13 @@ function viewInvoiceHistory(){
                 document.getElementById("invNumValue").innerText=inv.number||'';
                 document.getElementById("customerName").innerText=inv.customer||'';
                 document.getElementById("invDate").innerText=inv.date||'';
+                // تأكد من تحديث قائمة المحلات
+                refreshStoresSelect();
                 if(inv.store){
                     document.getElementById("invoiceStoreSelect").value = inv.store;
                     const searchInp = document.getElementById("invoiceSearchInput");
                     searchInp.disabled = false;
-                    searchInp.placeholder = `🔍 ابحث في جرد (${inv.store})...`;
+                    searchInp.placeholder = `🔍 ابحث في جرد (${getStoreName(inv.store)})...`;
                 } else {
                     document.getElementById("invoiceStoreSelect").value = "";
                 }
@@ -4111,6 +4786,9 @@ function prepareCloneForCapture(){
     if(ab)ab.style.display="none";
     const cp=clone.querySelector(".currency-selector-panel");
     if(cp)cp.style.display="none";
+    // إخفاء صف المحل في الصورة
+    const ssr=clone.querySelector(".store-selector-row");
+    if(ssr)ssr.style.display="none";
     clone.querySelectorAll(".delete-btn-invoice").forEach(c=>c.style.display="none");
     const dh=clone.querySelector("#deleteHeader");
     if(dh)dh.style.display="none";
@@ -4140,9 +4818,21 @@ async function captureInvoice(){
         const canvas = await html2canvas(clone, { scale: 4, backgroundColor: "#ffffff", useCORS: true, logging: false });
         const dataUrl = canvas.toDataURL("image/png", 1.0);
         const base64 = dataUrl.split(',')[1];
-        const filename = 'فاتورة_' + Date.now() + '.png';
+        const now = new Date();
+        const dateStr = now.getFullYear() + '-' + 
+            String(now.getMonth()+1).padStart(2,'0') + '-' + 
+            String(now.getDate()).padStart(2,'0') + '_' +
+            String(now.getHours()).padStart(2,'0') + 
+            String(now.getMinutes()).padStart(2,'0') + 
+            String(now.getSeconds()).padStart(2,'0');
+        const filename = 'فاتورة_' + dateStr + '.png';
         hideLoading();
-        await saveOrShareFile(filename, base64, 'image/png', true);
+        const result = await saveFileToAlwateenFolder(filename, base64, 'image/png', true);
+        if (result.ok) {
+            alert('✅ تم حفظ الصورة\n\n📁 ' + result.location + '\n📄 ' + filename);
+        } else {
+            alert('❌ فشل الحفظ: ' + (result.error || 'خطأ غير معروف'));
+        }
     } catch(e) {
         hideLoading();
         alert("❌ خطأ: " + e.message);
@@ -4170,6 +4860,166 @@ async function shareInvoiceImage(){
     }
 }
 
+// ==================== قائمة المخزون الفرعية ====================
+function showInventorySubMenu(){
+    const overlay = document.createElement("div");
+    overlay.className = "submenu-overlay";
+    overlay.innerHTML = `
+        <div class="submenu-card">
+            <h3>📦 المخزون</h3>
+            <p>اختر ما تريد عرضه</p>
+            <button class="submenu-btn" data-action="inventory">
+                <span>📋 إدارة الجرد</span>
+                <span class="count-badge">فتح</span>
+            </button>
+            <button class="submenu-btn" data-action="value" style="border-color:#e67e22;background:#fff4e6;">
+                <span style="color:#d35400;">💵 قيمة الجرد ($)</span>
+                <span class="count-badge" style="background:#e67e22;">فتح</span>
+            </button>
+            <button class="submenu-cancel">❌ إلغاء</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    overlay.querySelectorAll(".submenu-btn").forEach(btn => {
+        btn.onclick = () => {
+            const action = btn.dataset.action;
+            overlay.remove();
+            if(action === "inventory") openInventoryManager();
+            else if(action === "value") openInventoryValueManager();
+        };
+    });
+    overlay.querySelector(".submenu-cancel").onclick = () => overlay.remove();
+}
+
+// ==================== قائمة الإعدادات الفرعية ====================
+function showSettingsSubMenu(){
+    const overlay = document.createElement("div");
+    overlay.className = "submenu-overlay";
+    overlay.innerHTML = `
+        <div class="submenu-card">
+            <h3>⚙️ الإعدادات</h3>
+            <p>اختر ما تريد</p>
+            <button class="submenu-btn" data-action="print">
+                <span>🖨️ إعدادات الطباعة</span>
+                <span class="count-badge">فتح</span>
+            </button>
+            <button class="submenu-btn" data-action="backup" style="border-color:#2980b9;background:#eaf4fb;">
+                <span style="color:#1a5a80;">💾 النسخ الاحتياطي</span>
+                <span class="count-badge" style="background:#2980b9;">فتح</span>
+            </button>
+            <button class="submenu-btn" data-action="restore" style="border-color:#d35400;background:#fff3e6;">
+                <span style="color:#a04000;">📂 استعادة الملفات</span>
+                <span class="count-badge" style="background:#d35400;">فتح</span>
+            </button>
+            <button class="submenu-btn" data-action="stores" style="border-color:#9b59b6;background:#f4ecf7;">
+                <span style="color:#6c3483;">🏪 إدارة المحلات</span>
+                <span class="count-badge" style="background:#9b59b6;">فتح</span>
+            </button>
+            <button class="submenu-cancel">❌ إلغاء</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    overlay.querySelectorAll(".submenu-btn").forEach(btn => {
+        btn.onclick = () => {
+            const action = btn.dataset.action;
+            overlay.remove();
+            if(action === "print") openPrintSettingsModal();
+            else if(action === "backup") exportFullBackupFile();
+            else if(action === "restore") {
+                const inp = document.getElementById("mainRestoreFileInput");
+                if(inp) inp.click();
+            }
+            else if(action === "stores") openStoresManagement();
+        };
+    });
+    overlay.querySelector(".submenu-cancel").onclick = () => overlay.remove();
+}
+
+// ==================== نافذة عن التطبيق ====================
+function showAboutDialog(){
+    const overlay = document.createElement("div");
+    overlay.className = "about-overlay";
+    overlay.innerHTML = `
+        <div class="about-card">
+            <div class="about-logo">الوتين</div>
+            <div class="about-title">مركز الوتين - فواتير</div>
+            <div class="about-version">✨ النسخة التجريبية ✨</div>
+            
+            <div class="about-info">
+                <div class="label">تصميم وتطوير</div>
+                <div class="value">Talal</div>
+                <div class="label">للتواصل</div>
+                <div class="value" dir="ltr">0938791890</div>
+            </div>
+            
+            <button class="about-close">إغلاق</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    overlay.querySelector(".about-close").onclick = () => overlay.remove();
+    overlay.onclick = (e) => { if(e.target === overlay) overlay.remove(); };
+}
+
+// ==================== معالجة زر الرجوع في أندرويد ====================
+function handleAndroidBack() {
+    const invoicePage = document.getElementById('invoicePage');
+    if (invoicePage && invoicePage.style.display === 'block') {
+        closeInvoice();
+        return true;
+    }
+    
+    const modals = document.querySelectorAll('.history-modal, .settings-modal, .store-picker-overlay, .custom-confirm-overlay, .submenu-overlay, .about-overlay');
+    if (modals.length > 0) {
+        modals[modals.length - 1].remove();
+        return true;
+    }
+    
+    const fullScreens = document.querySelectorAll('#inventoryFullScreen, #invValueFullScreen, #incomingFullScreen');
+    if (fullScreens.length > 0) {
+        const last = fullScreens[fullScreens.length - 1];
+        const closeBtn = last.querySelector('#invFsClose, #invValueClose, #incFsBack, #invFsCloseBottom');
+        if (closeBtn) closeBtn.click();
+        else { last.remove(); document.body.style.overflow = ''; }
+        return true;
+    }
+    
+    const brandPanel = document.getElementById('brandPanel');
+    if (brandPanel && brandPanel.style.display === 'block') {
+        closeBrandPanel();
+        return true;
+    }
+    
+    return false;
+}
+
+async function setupBackButton() {
+    try {
+        const App = window.Capacitor?.Plugins?.App;
+        if (App) {
+            await App.addListener('backButton', ({ canGoBack }) => {
+                const handled = handleAndroidBack();
+                if (!handled) {
+                    App.exitApp();
+                }
+            });
+            console.log('✅ تم تفعيل زر الرجوع');
+        } else {
+            console.warn('⚠️ @capacitor/app غير متوفر');
+        }
+    } catch(e) {
+        console.warn('خطأ في إعداد زر الرجوع:', e);
+    }
+}
+
+// ==================== شاشة البداية ====================
+function hideSplashScreen() {
+    const splash = document.getElementById('splashScreen');
+    if (splash) {
+        splash.classList.add('fade-out');
+        setTimeout(() => { splash.remove(); }, 600);
+    }
+}
+
 // ==================== التهيئة ====================
 async function init(){
     showLoading("جاري تحميل البيانات...");
@@ -4178,108 +5028,45 @@ async function init(){
     loadData();
     loadPrintSettings();
     loadInventory();
+    loadStoresList();
     loadIncomingHistory();
     loadOutboundHistory();
     loadDecimalPreference();
+    
+    // ترحيل البيانات القديمة (إذا لزم الأمر)
+    migrateInventoryIfNeeded();
+    
+    refreshStoresSelect();
     setupInvoiceSearch();
     setupCustomerAutosuggest();
+    
     document.getElementById("saveRateBtn").onclick=()=>{
         let r=safeParseFloat(document.getElementById("usdRate").value,0);
         if(r>0){priceData.rate=r;savePrices();if(currentBrand)renderProducts();alert("✅ تم التحديث");}
         else alert("❌ قيمة غير صالحة (يجب أن تكون أكبر من صفر)");
     };
+    
     document.getElementById("createInvoiceBtn").onclick=createInvoice;
     document.getElementById("mainHistoryBtn").onclick=viewInvoiceHistory;
     document.getElementById("mainDebtsBtn").onclick=viewDebtsSummary;
     document.getElementById("mainCustomersBtn").onclick=viewCustomersManagementModal;
     document.getElementById("mainBrandsBtn").onclick=viewBrandsManagementModal;
-    document.getElementById("mainInventoryBtn").onclick=openInventoryManager;
-    document.getElementById("mainInventoryValueBtn").onclick=openInventoryValueManager;
-    document.getElementById("mainPrintSettingsBtn").onclick=openPrintSettingsModal;
-    document.getElementById("mainFullBackupBtn").onclick=exportFullBackupFile;
-    const restoreBtn=document.getElementById("mainFullRestoreBtn");
+    document.getElementById("mainInventoryBtn").onclick=showInventorySubMenu;
+    document.getElementById("mainSettingsBtn").onclick=showSettingsSubMenu;
+    document.getElementById("mainAboutBtn").onclick=showAboutDialog;
+    
     const restoreInput=document.getElementById("mainRestoreFileInput");
-    if(restoreBtn&&restoreInput){restoreBtn.onclick=()=>restoreInput.click();restoreInput.onchange=importFullBackupFile;}
+    if(restoreInput){ restoreInput.onchange=importFullBackupFile; }
+    
     document.getElementById("backBtn").onclick=closeBrandPanel;
     document.getElementById("addProductBtn").onclick=addProduct;
 }
-// ==================== تحديث: الحفظ في Documents/Alwateen ====================
-async function saveFileToAlwateenFolder(filename, content, mimeType, isBase64) {
-    const Fs = window.Capacitor?.Plugins?.Filesystem;
-    if (isNativeApp() && Fs) {
-        const fullPath = 'Alwateen/' + filename;
-        try {
-            const opts = { path: fullPath, directory: 'DOCUMENTS', recursive: true };
-            if (isBase64) opts.data = content;
-            else { opts.data = content; opts.encoding = 'utf8'; }
-            const res = await Fs.writeFile(opts);
-            return { ok: true, uri: res.uri, location: 'المستندات/Alwateen' };
-        } catch(e1) { console.warn('فشل Documents:', e1); }
-        try {
-            const opts = { path: fullPath, directory: 'EXTERNAL_STORAGE', recursive: true };
-            if (isBase64) opts.data = content;
-            else { opts.data = content; opts.encoding = 'utf8'; }
-            const res = await Fs.writeFile(opts);
-            return { ok: true, uri: res.uri, location: 'الذاكرة/Alwateen' };
-        } catch(e2) { console.warn('فشل ExternalStorage:', e2); }
-        return { ok: false, error: 'فشل الحفظ في جميع المسارات' };
-    } else {
-        let blob;
-        if (isBase64) {
-            const byteChars = atob(content);
-            const bytes = new Uint8Array(byteChars.length);
-            for (let i = 0; i < byteChars.length; i++) bytes[i] = byteChars.charCodeAt(i);
-            blob = new Blob([bytes], { type: mimeType });
-        } else {
-            blob = new Blob([content], { type: mimeType });
-        }
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-        return { ok: true, location: 'تنزيلات المتصفح' };
-    }
-}
 
-// تحديث captureInvoice: حفظ مباشر بدون نافذة مشاركة
-async function captureInvoice(){
-    const clone = prepareCloneForCapture();
-    if(!clone){ alert("تعذر إنشاء الفاتورة"); return; }
-    showLoading("جاري التصوير والحفظ...");
-    try {
-        const canvas = await html2canvas(clone, { scale: 4, backgroundColor: "#ffffff", useCORS: true, logging: false });
-        const dataUrl = canvas.toDataURL("image/png", 1.0);
-        const base64 = dataUrl.split(',')[1];
-        const now = new Date();
-        const dateStr = now.getFullYear() + '-' + 
-            String(now.getMonth()+1).padStart(2,'0') + '-' + 
-            String(now.getDate()).padStart(2,'0') + '_' +
-            String(now.getHours()).padStart(2,'0') + 
-            String(now.getMinutes()).padStart(2,'0') + 
-            String(now.getSeconds()).padStart(2,'0');
-        const filename = 'فاتورة_' + dateStr + '.png';
-        hideLoading();
-        const result = await saveFileToAlwateenFolder(filename, base64, 'image/png', true);
-        if (result.ok) {
-            alert('✅ تم حفظ الصورة\n\n📁 ' + result.location + '\n📄 ' + filename);
-        } else {
-            alert('❌ فشل الحفظ: ' + (result.error || 'خطأ غير معروف'));
-        }
-    } catch(e) {
-        hideLoading();
-        alert("❌ خطأ: " + e.message);
-    } finally {
-        if (clone.parentNode) document.body.removeChild(clone);
-    }
-}
-
-// ==================== نهاية التحديث ====================
-
-window.onload=init;
+window.onload = async function() {
+    await init();
+    hideSplashScreen();
+    setTimeout(setupBackButton, 500);
+};
 </script>
 </body>
 </html>
