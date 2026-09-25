@@ -3835,7 +3835,15 @@ function importFullBackupFile(e){
             const d=JSON.parse(ev.target.result);
             if(d.prices){priceData=d.prices;savePrices();}
             if(d.usage){itemUsageCounts=d.usage;saveUsageCounts();}
-            if(d.invoices){savedInvoices=d.invoices;saveInvoiceList();}
+            if(d.invoices){
+    savedInvoices = d.invoices.map(inv => {
+        if(inv.store === "عيسى") return { ...inv, store: "store_aissa" };
+        if(inv.store === "ربيع") return { ...inv, store: "store_rabee" };
+        if(inv.store === "سوزان") return { ...inv, store: "store_suzan" };
+        return inv;
+    });
+    saveInvoiceList();
+}
             if(d.customers){customersDirectory=d.customers;saveCustomers();}
             if(d.printSettings){printSettings=Object.assign(printSettings,d.printSettings);savePrintSettings();}
             if(d.storesList && Array.isArray(d.storesList) && d.storesList.length > 0){
@@ -3843,14 +3851,49 @@ function importFullBackupFile(e){
                 saveStoresList();
             }
             if(d.inventory){
-                inventoryData = d.inventory;
-                storesList.forEach(s => {
-                    if(!inventoryData[s.id]) inventoryData[s.id] = {};
-                });
-                saveInventory();
-            }
-            if(d.incomingHistory && Array.isArray(d.incomingHistory)){ incomingHistory = d.incomingHistory; saveIncomingHistory(); }
-            if(d.outboundHistory && Array.isArray(d.outboundHistory)){ outboundHistory = d.outboundHistory; saveOutboundHistory(); }
+    inventoryData = d.inventory;
+    
+    // ⭐ ترحيل المفاتيح القديمة (عيسى/ربيع/سوزان → store_aissa/store_rabee/store_suzan)
+    const legacyStoreMap = {
+        "عيسى": "store_aissa",
+        "ربيع": "store_rabee",
+        "سوزان": "store_suzan"
+    };
+    
+    Object.keys(legacyStoreMap).forEach(oldKey => {
+        const newKey = legacyStoreMap[oldKey];
+        if(inventoryData[oldKey]){
+            // نقل الأصناف
+            if(!inventoryData[newKey]) inventoryData[newKey] = {};
+            Object.assign(inventoryData[newKey], inventoryData[oldKey]);
+            delete inventoryData[oldKey];
+            console.log(`✅ ترحيل جرد "${oldKey}" → "${newKey}"`);
+        }
+    });
+    
+    storesList.forEach(s => {
+        if(!inventoryData[s.id]) inventoryData[s.id] = {};
+    });
+    saveInventory();
+}
+            if(d.incomingHistory && Array.isArray(d.incomingHistory)){ 
+    incomingHistory = d.incomingHistory.map(h => {
+        if(h.store === "عيسى") return { ...h, store: "store_aissa" };
+        if(h.store === "ربيع") return { ...h, store: "store_rabee" };
+        if(h.store === "سوزان") return { ...h, store: "store_suzan" };
+        return h;
+    });
+    saveIncomingHistory(); 
+}
+            if(d.outboundHistory && Array.isArray(d.outboundHistory)){ 
+    outboundHistory = d.outboundHistory.map(h => {
+        if(h.store === "عيسى") return { ...h, store: "store_aissa" };
+        if(h.store === "ربيع") return { ...h, store: "store_rabee" };
+        if(h.store === "سوزان") return { ...h, store: "store_suzan" };
+        return h;
+    });
+    saveOutboundHistory(); 
+}
             if(d.inventoryCustomPrices){ DB.setItem("inventoryCustomPrices", JSON.stringify(d.inventoryCustomPrices)); }
             if(d.shopAddress) DB.setItem("shopAddress", d.shopAddress);
             if(d.shopPhone) DB.setItem("shopPhone", d.shopPhone);
