@@ -4203,6 +4203,82 @@ async function init(){
     document.getElementById("backBtn").onclick=closeBrandPanel;
     document.getElementById("addProductBtn").onclick=addProduct;
 }
+// ==================== تحديث: الحفظ في Documents/Alwateen ====================
+async function saveFileToAlwateenFolder(filename, content, mimeType, isBase64) {
+    const Fs = window.Capacitor?.Plugins?.Filesystem;
+    if (isNativeApp() && Fs) {
+        const fullPath = 'Alwateen/' + filename;
+        try {
+            const opts = { path: fullPath, directory: 'DOCUMENTS', recursive: true };
+            if (isBase64) opts.data = content;
+            else { opts.data = content; opts.encoding = 'utf8'; }
+            const res = await Fs.writeFile(opts);
+            return { ok: true, uri: res.uri, location: 'المستندات/Alwateen' };
+        } catch(e1) { console.warn('فشل Documents:', e1); }
+        try {
+            const opts = { path: fullPath, directory: 'EXTERNAL_STORAGE', recursive: true };
+            if (isBase64) opts.data = content;
+            else { opts.data = content; opts.encoding = 'utf8'; }
+            const res = await Fs.writeFile(opts);
+            return { ok: true, uri: res.uri, location: 'الذاكرة/Alwateen' };
+        } catch(e2) { console.warn('فشل ExternalStorage:', e2); }
+        return { ok: false, error: 'فشل الحفظ في جميع المسارات' };
+    } else {
+        let blob;
+        if (isBase64) {
+            const byteChars = atob(content);
+            const bytes = new Uint8Array(byteChars.length);
+            for (let i = 0; i < byteChars.length; i++) bytes[i] = byteChars.charCodeAt(i);
+            blob = new Blob([bytes], { type: mimeType });
+        } else {
+            blob = new Blob([content], { type: mimeType });
+        }
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        return { ok: true, location: 'تنزيلات المتصفح' };
+    }
+}
+
+// تحديث captureInvoice: حفظ مباشر بدون نافذة مشاركة
+async function captureInvoice(){
+    const clone = prepareCloneForCapture();
+    if(!clone){ alert("تعذر إنشاء الفاتورة"); return; }
+    showLoading("جاري التصوير والحفظ...");
+    try {
+        const canvas = await html2canvas(clone, { scale: 4, backgroundColor: "#ffffff", useCORS: true, logging: false });
+        const dataUrl = canvas.toDataURL("image/png", 1.0);
+        const base64 = dataUrl.split(',')[1];
+        const now = new Date();
+        const dateStr = now.getFullYear() + '-' + 
+            String(now.getMonth()+1).padStart(2,'0') + '-' + 
+            String(now.getDate()).padStart(2,'0') + '_' +
+            String(now.getHours()).padStart(2,'0') + 
+            String(now.getMinutes()).padStart(2,'0') + 
+            String(now.getSeconds()).padStart(2,'0');
+        const filename = 'فاتورة_' + dateStr + '.png';
+        hideLoading();
+        const result = await saveFileToAlwateenFolder(filename, base64, 'image/png', true);
+        if (result.ok) {
+            alert('✅ تم حفظ الصورة\n\n📁 ' + result.location + '\n📄 ' + filename);
+        } else {
+            alert('❌ فشل الحفظ: ' + (result.error || 'خطأ غير معروف'));
+        }
+    } catch(e) {
+        hideLoading();
+        alert("❌ خطأ: " + e.message);
+    } finally {
+        if (clone.parentNode) document.body.removeChild(clone);
+    }
+}
+
+// ==================== نهاية التحديث ====================
+
 window.onload=init;
 </script>
 </body>
