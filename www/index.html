@@ -464,8 +464,8 @@
 <body>
     <!-- شاشة البداية -->
     <div id="splashScreen">
-        <div class="splash-logo">الوتين</div>
-        <div class="splash-subtitle">مركز الوتين — فواتير</div>
+        <div class="splash-logo">مركز الوتين</div>
+        <div class="splash-subtitle">نظام المحاسبة</div>
         <div class="splash-designer">
             <div class="line1">Designed by [Talal]</div>
             <div class="line2">📞 0938791890</div>
@@ -4984,8 +4984,8 @@ function showAboutDialog(){
     overlay.className = "about-overlay";
     overlay.innerHTML = `
         <div class="about-card">
-            <div class="about-logo">الوتين</div>
-            <div class="about-title">مركز الوتين - فواتير</div>
+            <div class="about-logo">مركز الوتين</div>
+            <div class="about-title">نظام المحاسبة</div>
             <div class="about-version">✨ النسخة التجريبية ✨</div>
             
             <div class="about-info">
@@ -5058,8 +5058,11 @@ async function setupBackButton() {
 function hideSplashScreen() {
     const splash = document.getElementById('splashScreen');
     if (splash) {
-        splash.classList.add('fade-out');
-        setTimeout(() => { splash.remove(); }, 600);
+        // ⏱️ غيّر الرقم حسب المدة التي تريدها (بالميلي ثانية)
+        setTimeout(() => {
+            splash.classList.add('fade-out');
+            setTimeout(() => { splash.remove(); }, 600);
+        }, 1500); // ← 1500 = 1.5 ثانية إضافية قبل البدء بالإخفاء
     }
 }
 
